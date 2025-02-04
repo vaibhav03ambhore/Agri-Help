@@ -1,0 +1,15 @@
+{
+  "name": "agrihelp_web_app",
+  "version": "1.0.0",
+  "description": "MERN project for an Intelligent Agricultural Decision Support System.",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "frontend": "cd Frontend && npm run dev",
+    "backend": "nodemon Backend/index.js",
+    "fullstack": "concurrently \"npm run backend\" \"npm run frontend\""
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}
