@@ -1,0 +1,4 @@
+.venv/
+Flask_Api/myenv/
+Flask_Api/models/__pycache__/
+Flask_Api/api/__pycache__/
