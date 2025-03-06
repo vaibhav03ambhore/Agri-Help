@@ -1,27 +1,66 @@
+# flask-api/models/crop_recommendation.py
 import pickle
-import numpy as np
+import pandas as pd
 
-# Load model and scaler
-with open('./model_weights/crop_recom_model.pkl', 'rb') as f:
-    model = pickle.load(f)
-with open('./model_weights/scaler.pkl', 'rb') as f:
-    scaler = pickle.load(f)
-
-crop_dict = {
-    'rice': 1, 'maize': 2, 'chickpea': 3, 'kidneybeans': 4,
-    'pigeonpeas': 5, 'mothbeans': 6, 'mungbean': 7, 'blackgram': 8,
-    'lentil': 9, 'pomegranate': 10, 'banana': 11, 'mango': 12,
-    'grapes': 13, 'watermelon': 14, 'muskmelon': 15, 'apple': 16,
-    'orange': 17, 'papaya': 18, 'coconut': 19, 'cotton': 20,
-    'jute': 21, 'coffee': 22
-}
-reverse_crop_dict = {v: k for k, v in crop_dict.items()}
-
-def recommend_crop(data):
-    features = np.array([[data['N'], data['P'], data['K'], 
-                        data['temperature'], data['humidity'],
-                        data['ph'], data['rainfall']]])
-    scaled = scaler.transform(features)
-    proba = model.predict_proba(scaled)[0]
-    idx = np.argmax(proba)
-    return reverse_crop_dict[idx+1], proba[idx]
+class CropRecommender:
+    def __init__(self):
+        self.model = None
+        self.loaded = False
+        self.soil_mapping = {
+            'Black': 1, 'Red ': 2, 'Medium Brown': 3, 'Dark Brown': 4,
+            'Red': 5, 'Light Brown': 6, 'Reddish Brown': 7, 'Brown': 8, 'Reddish': 9
+        }
+        self.crop_mapping = {
+            1: 'Sugarcane', 2: 'Jowar', 3: 'Cotton', 4: 'Rice',
+            5: 'Wheat', 6: 'Groundnut', 7: 'Maize', 8: 'Potato',
+            9: 'Urad', 10: 'Tomato', 11: 'Soybean', 12: 'Turmeric', 13: 'Grapes'
+        }
+        
+    def load_model(self):
+        """Load the trained model"""
+        try:
+            with open('./model_weights/crop_recommendation.pkl', 'rb') as f:
+                self.model = pickle.load(f)
+            self.loaded = True
+        except Exception as e:
+            print("Error loading model:", e)
+            self.loaded = False
+            
+    def predict(self, input_data):
+        """Make crop prediction"""
+        if not self.loaded:
+            self.load_model()
+            if not self.loaded:
+                return {"crop": None, "error": "Model loading failed"}
+                
+        try:
+            # Validate soil color
+            soil_color = input_data['Soil_color']
+            if soil_color not in self.soil_mapping:
+                valid_colors = list(self.soil_mapping.keys())
+                return {"crop": None, "error": f"Invalid Soil Color. Valid options: {valid_colors}"}
+            
+            # Prepare input features
+            features = pd.DataFrame([[
+                self.soil_mapping[soil_color],
+                input_data['Nitrogen'],
+                input_data['Phosphorus'],
+                input_data['Potassium'],
+                input_data['pH'],
+                input_data['Rainfall'],
+                input_data['Temperature']
+            ]], columns=['Soil_color', 'Nitrogen', 'Phosphorus', 
+                        'Potassium', 'pH', 'Rainfall', 'Temperature'])
+            
+            # Make prediction
+            prediction = self.model.predict(features)
+            crop_code = prediction[0]
+            
+            # Map to crop name
+            if crop_code not in self.crop_mapping:
+                return {"crop": None, "error": "Unknown crop predicted"}
+            
+            return {"crop": self.crop_mapping[crop_code], "error": None}
+            
+        except Exception as e:
+            return {"crop": None, "error": str(e)}
