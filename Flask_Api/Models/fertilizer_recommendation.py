@@ -1,27 +1,43 @@
+# flask-api/models/fertilizer_recommendation.py
 import joblib
 import pandas as pd
-import numpy as np
 
-# Load model and encoder
-model = joblib.load('./model_weights/rfFertilizer_model.joblib')
-encoder = joblib.load('./model_weights/fertilizer_encoder.joblib')  # Save encoder during training
-
-def recommend_fertilizer(input_data):
-    # Create DataFrame from input
-    sample_df = pd.DataFrame([input_data])
-    
-    # Encode categorical features
-    encoded_data = pd.DataFrame(
-        encoder.transform(sample_df[['Soil_color', 'Crop']]),
-        columns=encoder.get_feature_names_out(['Soil_color', 'Crop'])
-    )
-    
-    # Combine features
-    final_data = pd.concat([sample_df.drop(['Soil_color', 'Crop'], axis=1), encoded_data], axis=1)
-    
-    # Ensure correct feature order
-    final_data = final_data.reindex(columns=model.feature_names_in_, fill_value=0)
-    
-    # Make prediction
-    prediction = model.predict(final_data)
-    return prediction[0]
+class FertilizerRecommender:
+    def __init__(self):
+        self.model = None
+        self.preprocessor = None
+        self.loaded = False
+        
+    def load_models(self):
+        """Load model and preprocessor"""
+        try:
+            self.model = joblib.load('./model_weights/rfFertilizer_model.joblib')
+            self.preprocessor = joblib.load('./model_weights/fertilizer_preprocessor.joblib')
+            self.loaded = True
+        except Exception as e:
+            print("Error loading models:", e)
+            self.loaded = False
+            
+    def predict(self, input_data):
+        """Make prediction using loaded models"""
+        if not self.loaded:
+            self.load_models()
+            
+        try:
+            # Convert input to DataFrame
+            sample_df = pd.DataFrame([input_data])
+            
+            # Preprocess the input
+            processed_data = self.preprocessor.transform(sample_df)
+            features = self.preprocessor.get_feature_names_out()
+            sample_prepared = pd.DataFrame(processed_data, columns=features)
+            
+            # Ensure correct feature order
+            sample_prepared = sample_prepared.reindex(columns=self.model.feature_names_in_, fill_value=0)
+            
+            # Make prediction
+            prediction = self.model.predict(sample_prepared)
+            return {"fertilizer": prediction[0], "error": None}
+        except Exception as e:
+            print("Prediction error:", e)
+            return {"fertilizer": None, "error": str(e)}
