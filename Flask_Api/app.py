@@ -28,21 +28,21 @@ MODEL_URL = "https://drive.googleapis.com/uc?export=download&id=10HpNPOdHgWnrCDZ
 MODEL_PATH = os.path.join(MODEL_DIR, "disease_classification.keras")
 
 # Create directory if missing
-if not os.path.exists(MODEL_DIR):
-    os.makedirs(MODEL_DIR, exist_ok=True)
+# if not os.path.exists(MODEL_DIR):
+    # os.makedirs(MODEL_DIR, exist_ok=True)
 
 # Download the file if it doesn’t exist
-if not os.path.exists(MODEL_PATH):
-    print("Downloading model file...")
-    response = requests.get(MODEL_URL)
-    if response.status_code == 200:
-        with open(MODEL_PATH, "wb") as f:
-            f.write(response.content)
-        print("Model downloaded successfully!")
-    else:
-        raise Exception(f"Failed to download model. Status code: {response.status_code}")
-else:
-    print("Model already exists.")
+# if not os.path.exists(MODEL_PATH):
+#     print("Downloading model file...")
+#     response = requests.get(MODEL_URL)
+#     if response.status_code == 200:
+#         with open(MODEL_PATH, "wb") as f:
+#             f.write(response.content)
+#         print("Model downloaded successfully!")
+#     else:
+#         raise Exception(f"Failed to download model. Status code: {response.status_code}")
+# else:
+#     print("Model already exists.")
 
 
 if __name__ == '__main__':

@@ -33,17 +33,20 @@ const Home = () => {
 
   const [isHovered, setIsHovered] = useState(false);
 
+  
+  
+
   useEffect(() => {
     const slider = sliderRef.current;
     if (slider) {
       slider.addEventListener("scroll", checkScroll);
       checkScroll();
       window.addEventListener("load", checkScroll);
-
+  
       const cardWidth = 320;
       const gap = 32;
       let timer;
-
+  
       if (!isHovered) {
         timer = setInterval(() => {
           if (sliderRef.current) {
@@ -51,50 +54,78 @@ const Home = () => {
             const currentScroll = sliderRef.current.scrollLeft;
             const targetScroll =
               Math.ceil(currentScroll / (cardWidth + gap)) * (cardWidth + gap);
-
+  
+            // Infinite scroll logic
             if (currentScroll >= (cards.length - 1) * (cardWidth + gap)) {
+              // If at the end, instantly scroll to the start (without animation)
               sliderRef.current.scrollTo({
                 left: 0,
                 behavior: "auto",
               });
             } else {
+              // Otherwise, scroll to the next card
               sliderRef.current.scrollTo({
                 left: targetScroll + (cardWidth + gap),
                 behavior: "smooth",
               });
             }
-
-            setCurrentSlide((prev) => (prev + 1) % 4);
+  
+            // Update the current slide indicator
+            setCurrentSlide((prev) => (prev + 1) % totalSlides);
           }
         }, 3000);
       }
-
+  
       return () => {
         slider.removeEventListener("scroll", checkScroll);
         window.removeEventListener("load", checkScroll);
         clearInterval(timer);
       };
     }
-  }, [checkScroll,isHovered]);
-
+  }, [checkScroll, isHovered]);
+  
   const scroll = (direction) => {
     if (sliderRef.current) {
       const cardWidth = 320;
       const gap = 32;
       const currentScroll = sliderRef.current.scrollLeft;
-      const targetScroll =
-        direction === "left"
-          ? Math.floor(currentScroll / (cardWidth + gap)) * (cardWidth + gap)
-          : Math.ceil(currentScroll / (cardWidth + gap)) * (cardWidth + gap);
-
+      const cards = sliderRef.current.children[0].children;
+  
+      let targetScroll;
+      if (direction === "left") {
+        targetScroll = currentScroll - (cardWidth + gap);
+        if (targetScroll < 0) {
+          // If scrolling left from the first slide, jump to the end
+          targetScroll = (cards.length - 1) * (cardWidth + gap);
+        }
+      } else {
+        targetScroll = currentScroll + (cardWidth + gap);
+        if (targetScroll >= (cards.length - 1) * (cardWidth + gap)) {
+          // If scrolling right from the last slide, jump to the start
+          targetScroll = 0;
+        }
+      }
+  
       sliderRef.current.scrollTo({
-        left:
-          targetScroll +
-          (direction === "left" ? -(cardWidth + gap) : cardWidth + gap),
+        left: targetScroll,
         behavior: "smooth",
+      });
+  
+      // Update the current slide indicator
+      setCurrentSlide((prev) => {
+        if (direction === "left") {
+          return prev === 0 ? totalSlides - 1 : prev - 1;
+        } else {
+          return (prev + 1) % totalSlides;
+        }
       });
     }
   };
+
+
+
+     
+  
   const validateForm = () => {
     const errors = {};
     if (!contactForm.name.trim()) errors.name = "Name is required";
@@ -263,7 +294,7 @@ const Home = () => {
               onMouseLeave={() => setIsHovered(false)}
             >
               <div className="flex gap-8">
-                {[...Array.from({ length: 1 })]
+                {[...Array.from({ length: 8 })]
                   .map(() => [
                     {
                       title: "Plant Disease Identification",
