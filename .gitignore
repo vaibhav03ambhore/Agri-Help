@@ -1,5 +1,5 @@
 .venv/
-Flask_Api/myenv/
+Flask_Api/venv_name/
 Flask_Api/models/__pycache__/
 Flask_Api/api/__pycache__/
 Flask_Api/model_weights/disease_classification.keras

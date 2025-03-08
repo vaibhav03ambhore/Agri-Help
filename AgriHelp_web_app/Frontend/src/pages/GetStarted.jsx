@@ -154,6 +154,28 @@ const GetStarted=()=> {
             Tell us about your farm to get personalized recommendations
           </p>
         </div>
+        <div className="fixed bottom-4 right-4 z-50 group">
+          <a href="/account/signin" className="block">
+            <div className="bg-[#4a8b3f] p-2 rounded-full cursor-pointer hover:bg-[#3a6d31] transition-colors relative">
+              <svg
+                className="w-8 h-8 text-white"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                  d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+                />
+              </svg>
+              <div className="absolute hidden group-hover:block bg-black text-white text-sm py-1 px-2 rounded -top-8 left-1/2 transform -translate-x-1/2 whitespace-nowrap">
+                Login
+              </div>
+            </div>
+          </a>
+        </div>
       </div>
 
       <div className="max-w-4xl mx-auto px-4 pb-12">
@@ -237,7 +259,7 @@ const GetStarted=()=> {
             </div>
           )}
         </div>
-      </div>
+      </div>        
     </div>
   );
 }
