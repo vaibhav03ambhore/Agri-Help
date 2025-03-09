@@ -93,6 +93,7 @@ const Login = () => {
           mobile: method === "mobile" ? mobile : null,
           otp,
         }),
+        credentials: 'include',
       });
 
       if (!response.ok) {
