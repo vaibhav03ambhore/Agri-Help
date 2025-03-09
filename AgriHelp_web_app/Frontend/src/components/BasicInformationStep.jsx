@@ -6,7 +6,7 @@ const BasicInformationStep=({ data, updateData, onNext })=> {
     const validate = () => {
       const newErrors = {};
       if (!data.fullName) newErrors.fullName = "Required";
-      if (!data.email) newErrors.email = "Required";
+      if (!data.email) newErrors.email ;
       else if (!/\S+@\S+\.\S+/.test(data.email))
         newErrors.email = "Invalid email";
       if (!data.contactNumber) newErrors.contactNumber = "Required";

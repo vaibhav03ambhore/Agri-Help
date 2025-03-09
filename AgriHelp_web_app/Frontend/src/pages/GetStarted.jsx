@@ -52,6 +52,8 @@ const GetStarted=()=> {
         },
         body: JSON.stringify({
           basicInfo: formData.basicInfo,
+          farmDetails: formData.farmDetails, 
+          technology: formData.technology, 
           cropSelections: [
             ...formData.farmDetails.currentCrops.map((crop) => ({
               name: crop,
@@ -75,6 +77,7 @@ const GetStarted=()=> {
             priority: index + 1,
           })),
         }),
+        credentials: 'include',
       });
 
       if (!response.ok) {
@@ -83,7 +86,7 @@ const GetStarted=()=> {
 
       setSuccess(true);
     } catch (err) {
-      setError("Failed to submit form. Please try again.");
+      setError("Failed to submit form. "+err.message);
       console.error(err);
     } finally {
       setLoading(false);
