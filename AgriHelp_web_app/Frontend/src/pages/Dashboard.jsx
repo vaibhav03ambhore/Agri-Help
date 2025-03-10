@@ -1,73 +1,90 @@
-import { useState } from "react";
-import { useEffect } from "react";
+import { useState, useEffect } from "react";
+import RecommendCrop from "../dashboard_components/RecommendCrop";
+import RecommendFertilizer from "../dashboard_components/RecommendFertilizer";
+import PredictPest from "../dashboard_components/PredictPest";
+import PredictDisease from "../dashboard_components/PredictDisease";
+import FarmOperationsAndStrategy from "../dashboard_components/FarmOperationsAndStrategy";
+import FarmerInfo from "../dashboard_components/FarmerInfo";
+import FarmInfo from "../dashboard_components/FarmInfo";
 
-const Dashboard=()=> {
-  const [farmerData, setFarmerData] = useState(null);
-  const [error, setError] = useState(null);
+const Dashboard = () => {
+  const [stats, setStats] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [isSidebarExpanded, setIsSidebarExpanded] = useState(true);
-  const [activeView, setActiveView] = useState("overview");
+  const [error, setError] = useState(null);
+  const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [selectedMenuItem, setSelectedMenuItem] = useState("profile");
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  
+  const loadDashboard = async () => {
+    try {
+      setLoading(true);
+      setError(null);
+      
+      const response = await fetch("/api/get-farmer-profile", {
+        credentials: 'include'
+      });
+      
+      if (!response.ok) throw new Error('Failed to fetch profile');
+      
+      const data = await response.json();
+
+      if (!data.success || !data.data) {
+        setError("Farmer profile not found");
+        return;
+      }
+
+      const transformedData = {
+        profile: {
+          ...data.data.basicInfo,
+          ...data.data.farmDetails,
+          technology: data.data.technology
+        },
+        currentCrops: data.data.farmDetails.currentCrops,
+        plannedCrops: data.data.farmDetails.plannedCrops,
+        challenges: data.data.challenges,
+        goals: data.data.goals
+      };
+
+      setStats(transformedData);
+
+    } catch (err) {
+      console.error(err);
+      setError(err.message || "Failed to load dashboard data");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleMenuClick = (menuItem) => {
+    setSelectedMenuItem(menuItem);
+    // Close mobile menu after selection on mobile
+    if (window.innerWidth < 768) {
+      setIsMobileMenuOpen(false);
+    }
+  };
 
   useEffect(() => {
-    setTimeout(() => {
-      setFarmerData({
-        basicInfo: {
-          fullName: "John Smith",
-          location: "Sacramento Valley, CA",
-          farmSize: "150",
-          farmSizeUnit: "acres",
-          farmingType: "Organic Mixed Farming",
-        },
-        technology: [
-          "Smart Irrigation System",
-          "Soil Sensors",
-          "Drone Mapping",
-          "Weather Station",
-        ],
-        farmDetails: {
-          currentCrops: ["Tomatoes", "Sweet Corn", "Bell Peppers"],
-          plannedCrops: ["Winter Wheat", "Cover Crops", "Soybeans"],
-        },
-        goals: [
-          { type: "Increase Crop Yield by 20%", priority: 1 },
-          { type: "Implement Water Conservation", priority: 2 },
-          { type: "Expand Organic Certification", priority: 3 },
-        ],
-        challenges: [
-          { type: "Water Management", details: "Drought conditions" },
-          { type: "Pest Control", details: "Organic solutions needed" },
-          { type: "Labor Shortage", details: "Peak season staffing" },
-          { type: "Market Access", details: "Transportation costs" },
-        ],
-      });
-      setLoading(false);
-    }, 500);
+    loadDashboard();
   }, []);
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-[#f8f9fa] flex items-center justify-center">
-        <div className="text-[#4a8b3f] text-xl">Loading...</div>
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#4a8b3f] mx-auto mb-4"></div>
+          <p className="text-gray-600">Loading your dashboard...</p>
+        </div>
       </div>
     );
   }
 
   if (error) {
     return (
-      <div className="min-h-screen bg-[#f8f9fa] flex items-center justify-center">
+      <div className="min-h-screen bg-gray-50 flex flex-col items-center justify-center gap-4">
         <div className="text-red-600 text-xl">{error}</div>
-      </div>
-    );
-  }
-
-  if (!farmerData) {
-    return (
-      <div className="min-h-screen bg-[#f8f9fa] flex flex-col items-center justify-center gap-4">
-        <div className="text-[#4a8b3f] text-xl">No profile found</div>
         <a
           href="/get-started"
-          className="bg-[#4a8b3f] hover:bg-[#3a6d31] text-white font-bold py-2 px-6 rounded-lg transition duration-300"
+          className="bg-green-700 hover:bg-green-800 text-white font-bold py-2 px-6 rounded-lg transition duration-300"
         >
           Create Profile
         </a>
@@ -75,273 +92,252 @@ const Dashboard=()=> {
     );
   }
 
-  const menuItems = [
-    { id: "overview", icon: "fa-home", label: "Farm Overview" },
-    { id: "analysis", icon: "fa-brain", label: "AI Analysis" },
-    { id: "reports", icon: "fa-file-alt", label: "Reports" },
-  ];
-
   return (
-    <div className="min-h-screen bg-[#f8f9fa] flex">
-      <div
-        className={`fixed hidden md:block h-screen bg-gradient-to-b from-[#2c5530] to-[#1a331d] transition-all duration-300 ease-in-out ${
-          isSidebarExpanded ? "w-[240px]" : "w-[64px]"
-        }`}
-      >
-        <div className="p-4 flex justify-end">
-          <button
-            onClick={() => setIsSidebarExpanded(!isSidebarExpanded)}
-            className="text-white hover:text-gray-200 transition-colors"
-          >
-            <i
-              className={`fas ${
-                isSidebarExpanded ? "fa-chevron-left" : "fa-chevron-right"
-              }`}
-            ></i>
-          </button>
-        </div>
-        <nav className="mt-8">
-          {menuItems.map((item) => (
-            <button
-              key={item.id}
-              onClick={() => setActiveView(item.id)}
-              className={`w-full flex items-center px-4 py-3 transition-colors ${
-                activeView === item.id ? "bg-white/10" : "hover:bg-white/5"
-              } ${isSidebarExpanded ? "justify-start" : "justify-center"}`}
-            >
-              <i className={`fas ${item.icon} text-white`}></i>
-              {isSidebarExpanded && (
-                <span className="ml-3 text-white">{item.label}</span>
-              )}
-            </button>
-          ))}
-        </nav>
+    <div className="min-h-screen bg-gray-50 flex">
+      {/* Mobile Header */}
+      <div className="md:hidden fixed w-full bg-white shadow-md z-50 px-4 py-3 flex justify-between items-center">
+        <h1 className="text-xl font-semibold text-green-700">
+          <i className="fas fa-leaf mr-2"></i>
+          AgriHelp
+        </h1>
+        <button
+          onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+          className="p-2 text-gray-600 hover:text-green-700"
+        >
+          <i className={`fas ${isMobileMenuOpen ? 'fa-times' : 'fa-bars'} text-xl`}></i>
+        </button>
       </div>
 
-      {isMobileMenuOpen && (
-        <>
-          <div
-            className="fixed inset-0 bg-black/50 z-40 md:hidden"
-            onClick={() => setIsMobileMenuOpen(false)}
-          />
-          <div className="fixed top-0 left-0 right-0 bg-gradient-to-r from-[#2c5530] to-[#1a331d] z-50 md:hidden animate-slideDown">
-            <div className="p-4">
-              <div className="flex justify-end">
-                <button
-                  onClick={() => setIsMobileMenuOpen(false)}
-                  className="text-white hover:text-gray-200 transition-colors"
-                >
-                  <i className="fas fa-times"></i>
-                </button>
-              </div>
-              <nav className="py-2">
-                {menuItems.map((item) => (
-                  <button
-                    key={item.id}
-                    onClick={() => {
-                      setActiveView(item.id);
-                      setIsMobileMenuOpen(false);
-                    }}
-                    className={`w-full flex items-center px-4 py-3 transition-colors ${
-                      activeView === item.id
-                        ? "bg-white/10"
-                        : "hover:bg-white/5"
-                    } rounded-lg mb-1`}
-                  >
-                    <i className={`fas ${item.icon} text-white`}></i>
-                    <span className="ml-3 text-white">{item.label}</span>
-                  </button>
-                ))}
-              </nav>
-            </div>
-          </div>
-        </>
-      )}
-
-      <div
-        className={`flex-1 transition-all duration-300 ${
-          isSidebarExpanded ? "md:ml-[240px]" : "md:ml-[64px]"
+      {/* Mobile Menu - Dropdown from top */}
+      <div 
+        className={`md:hidden fixed top-0 left-0 right-0 z-40 bg-white shadow-lg transform transition-transform duration-300 ease-in-out ${
+          isMobileMenuOpen ? 'translate-y-0 mt-14' : '-translate-y-full'
         }`}
       >
-        <div className="py-12 bg-gradient-to-r from-[#2c5530] to-[#1a331d]">
-          <div className="max-w-7xl mx-auto px-4">
-            <div className="flex justify-between items-center">
-              <div className="text-white">
-                <h1 className="text-4xl font-bold mb-2">
-                  Welcome, {farmerData.basicInfo.fullName}
-                </h1>
-                <p className="text-xl opacity-90">
-                  {farmerData.basicInfo.location}
-                </p>
-              </div>
-              <div className="flex items-center gap-4">
-                <button
-                  onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-                  className="text-white hover:text-gray-200 transition-colors md:hidden"
-                >
-                  <i
-                    className={`fas ${
-                      isMobileMenuOpen ? "fa-times" : "fa-bars"
-                    }`}
-                  ></i>
-                </button>
-                <a
-                  href="/get-started"
-                  className="text-white hover:text-gray-200 transition-colors p-2 rounded-full hover:bg-white/10"
-                  title="Edit Profile"
-                >
-                  <i className="fas fa-edit text-xl"></i>
-                </a>
-              </div>
-            </div>
+        <div className="p-4">
+          <nav className="space-y-2">
+            <button
+              onClick={() => handleMenuClick("profile")}
+              className={`flex items-center space-x-2 p-3 rounded-lg cursor-pointer w-full ${
+                selectedMenuItem === "profile"
+                  ? "bg-green-700 text-white"
+                  : "text-gray-700 hover:text-green-700"
+              }`}
+            >
+              <i className="fas fa-user"></i>
+              <span>Profile</span>
+            </button>
+            <button
+              onClick={() => handleMenuClick("recommend-crop")}
+              className={`flex items-center space-x-2 p-3 rounded-lg cursor-pointer w-full ${
+                selectedMenuItem === "recommend-crop"
+                  ? "bg-green-700 text-white"
+                  : "text-gray-700 hover:text-green-700"
+              }`}
+            >
+              <i className="fas fa-seedling"></i>
+              <span>Recommend Crop</span>
+            </button>
+            <button
+              onClick={() => handleMenuClick("recommend-fertilizer")}
+              className={`flex items-center space-x-2 p-3 rounded-lg cursor-pointer w-full ${
+                selectedMenuItem === "recommend-fertilizer"
+                  ? "bg-green-700 text-white"
+                  : "text-gray-700 hover:text-green-700"
+              }`}
+            >
+              <i className="fas fa-flask"></i>
+              <span>Recommend Fertilizer</span>
+            </button>
+            <button
+              onClick={() => handleMenuClick("predict-pest")}
+              className={`flex items-center space-x-2 p-3 rounded-lg cursor-pointer w-full ${
+                selectedMenuItem === "predict-pest"
+                  ? "bg-green-700 text-white"
+                  : "text-gray-700 hover:text-green-700"
+              }`}
+            >
+              <i className="fas fa-bug"></i>
+              <span>Predict Pest</span>
+            </button>
+            <button
+              onClick={() => handleMenuClick("predict-disease")}
+              className={`flex items-center space-x-2 p-3 rounded-lg cursor-pointer w-full ${
+                selectedMenuItem === "predict-disease"
+                  ? "bg-green-700 text-white"
+                  : "text-gray-700 hover:text-green-700"
+              }`}
+            >
+              <i className="fas fa-disease"></i>
+              <span>Predict Plant Disease</span>
+            </button>
+            <button 
+              onClick={() => (window.location.href="/account/logout")}
+              className="flex items-center space-x-2 p-3 rounded-lg cursor-pointer w-full text-red-600"
+              title="Logout"
+            >
+              <i className="fas fa-sign-out-alt"></i>
+              <span>Logout</span>
+            </button>
+          </nav>
+        </div>
+      </div>
+
+      {/* Desktop Sidebar - Hidden on mobile */}
+      <div className="hidden md:block">
+        <div
+          className={`${
+            sidebarOpen ? "w-64" : "w-20"
+          } bg-white shadow-lg fixed h-full transition-all duration-300 ease-in-out`}
+        >
+          <div className="p-6 relative">
+            <button
+              onClick={() => setSidebarOpen(!sidebarOpen)}
+              className="absolute top-4 -right-1 bg-white p-2 rounded-lg hover:bg-gray-100"
+              title={sidebarOpen ? "Collapse sidebar" : "Expand sidebar"}
+            >
+              <i
+                className={`fas ${
+                  sidebarOpen ? "fa-chevron-left" : "fa-chevron-right"
+                } text-gray-600`}
+              ></i>
+            </button>
+            {sidebarOpen ? (
+              <h2 className="text-2xl font-bold text-green-700 mb-6">
+                <i className="fas fa-leaf mr-2"></i>
+                AgriHelp
+              </h2>
+            ) : (
+              <h2 className="text-2xl font-bold text-green-700 mb-6 text-center">
+                <i className="fas fa-leaf"></i>
+              </h2>
+            )}
+            <nav className="space-y-2">
+              <button
+                onClick={() => setSelectedMenuItem("profile")}
+                className={`flex items-center space-x-2 p-3 rounded-lg cursor-pointer w-full ${
+                  selectedMenuItem === "profile"
+                    ? "bg-green-700 text-white"
+                    : "text-gray-700 hover:text-green-700"
+                }`}
+              >
+                <i className="fas fa-user"></i>
+                {sidebarOpen && <span>Profile</span>}
+              </button>
+              <button
+                onClick={() => setSelectedMenuItem("recommend-crop")}
+                className={`flex items-center space-x-2 p-3 rounded-lg cursor-pointer w-full ${
+                  selectedMenuItem === "recommend-crop"
+                    ? "bg-green-700 text-white"
+                    : "text-gray-700 hover:text-green-700"
+                }`}
+              >
+                <i className="fas fa-seedling"></i>
+                {sidebarOpen && <span>Recommend Crop</span>}
+              </button>
+              <button
+                onClick={() => setSelectedMenuItem("recommend-fertilizer")}
+                className={`flex items-center space-x-2 p-3 rounded-lg cursor-pointer w-full ${
+                  selectedMenuItem === "recommend-fertilizer"
+                    ? "bg-green-700 text-white"
+                    : "text-gray-700 hover:text-green-700"
+                }`}
+              >
+                <i className="fas fa-flask"></i>
+                {sidebarOpen && <span>Recommend Fertilizer</span>}
+              </button>
+              <button
+                onClick={() => setSelectedMenuItem("predict-pest")}
+                className={`flex items-center space-x-2 p-3 rounded-lg cursor-pointer w-full ${
+                  selectedMenuItem === "predict-pest"
+                    ? "bg-green-700 text-white"
+                    : "text-gray-700 hover:text-green-700"
+                }`}
+              >
+                <i className="fas fa-bug"></i>
+                {sidebarOpen && <span>Predict Pest</span>}
+              </button>
+              <button
+                onClick={() => setSelectedMenuItem("predict-disease")}
+                className={`flex items-center space-x-2 p-3 rounded-lg cursor-pointer w-full ${
+                  selectedMenuItem === "predict-disease"
+                    ? "bg-green-700 text-white"
+                    : "text-gray-700 hover:text-green-700"
+                }`}
+              >
+                <i className="fas fa-disease"></i>
+                {sidebarOpen && <span>Predict Plant Disease</span>}
+              </button>
+              <div className="flex-1"></div>
+              <button 
+                onClick={() => (window.location.href="/account/logout")}
+                className="flex items-center space-x-2 p-3 rounded-lg cursor-pointer w-full hover:text-red-600 mt-auto"
+                title="Logout"
+              >
+                <i className="fas fa-sign-out-alt"></i>
+                {sidebarOpen && <span>Logout</span>}
+              </button>
+            </nav>
           </div>
         </div>
+      </div>  
 
-        <div className="max-w-7xl mx-auto px-4 py-8">
-          {activeView === "overview" && (
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-              <div className="bg-white rounded-2xl shadow-lg p-6">
-                <h2 className="text-2xl font-bold text-[#2c5530] mb-4">
-                  Farm Summary
-                </h2>
-                <div className="space-y-2">
-                  <p className="text-gray-700">
-                    <span className="font-semibold">Size:</span>{" "}
-                    {farmerData.basicInfo.farmSize}{" "}
-                    {farmerData.basicInfo.farmSizeUnit}
-                  </p>
-                  <p className="text-gray-700">
-                    <span className="font-semibold">Type:</span>{" "}
-                    {farmerData.basicInfo.farmingType}
-                  </p>
-                </div>
+      {/* Main Content Area */}
+      <div
+        className={`flex-1 bg-green-700 transition-all duration-300 ease-in-out md:${
+          sidebarOpen ? " md:ml-64 " : " md:ml-20"
+        } 
+        
+        mt-14 md:mt-0`}
+      >
+        {/* Desktop Header */}
+        <header className="hidden md:block bg-white shadow-sm bg-[url('/images/farm-header-bg.jpg')] bg-cover bg-center">
+          <div className="max-w-6xl mx-auto px-4 py-6 sm:px-6 lg:px-8 flex justify-between items-center bg-white bg-opacity-80"> <h1 className="text-2xl font-semibold text-gray-900">Dashboard Overview</h1>
+            <div className="flex items-center space-x-4">
+              <button 
+                onClick={loadDashboard}
+                className="p-2 text-green-700 hover:bg-green-50 rounded-lg disabled:opacity-50 transition-colors"
+                title="Refresh Data"
+                disabled={loading}
+              >
+                <i className={`fas fa-sync-alt ${loading ? "animate-spin" : ""}`}></i>
+                <span className="sr-only">Refresh Data</span>
+              </button>
+            </div>
+          </div>
+        </header>
+
+        <main className="max-w-7xl mx-auto px-4 py-8 sm:px-6 lg:px-8">
+          {selectedMenuItem === "profile" ? (
+            <div className="space-y-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <FarmerInfo farmerData={stats?.profile} />
+                <FarmInfo
+                  farmData={stats?.profile}
+                  currentCrops={stats?.currentCrops || []}
+                  plannedCrops={stats?.currentCrops?.filter(
+                    (crop) => crop.is_planned
+                  )||[]}
+                />
               </div>
-              <div className="bg-white rounded-2xl shadow-lg p-6">
-                <h2 className="text-2xl font-bold text-[#2c5530] mb-4">
-                  Technology Usage
-                </h2>
-                <div className="space-y-2">
-                  {farmerData.technology.map((tech, index) => (
-                    <div key={index} className="flex items-center gap-2">
-                      <svg
-                        className="w-5 h-5 text-[#4a8b3f]"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth="2"
-                          d="M5 13l4 4L19 7"
-                        />
-                      </svg>
-                      <span className="text-gray-700">{tech}</span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-              <div className="bg-white rounded-2xl shadow-lg p-6">
-                <h2 className="text-2xl font-bold text-[#2c5530] mb-4">
-                  Crops
-                </h2>
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <h3 className="font-semibold text-gray-700 mb-2">
-                      Current Crops
-                    </h3>
-                    <ul className="space-y-1">
-                      {farmerData.farmDetails.currentCrops.map(
-                        (crop, index) => (
-                          <li key={index} className="text-gray-600">
-                            {crop}
-                          </li>
-                        )
-                      )}
-                    </ul>
-                  </div>
-                  <div>
-                    <h3 className="font-semibold text-gray-700 mb-2">
-                      Planned Crops
-                    </h3>
-                    <ul className="space-y-1">
-                      {farmerData.farmDetails.plannedCrops.map(
-                        (crop, index) => (
-                          <li key={index} className="text-gray-600">
-                            {crop}
-                          </li>
-                        )
-                      )}
-                    </ul>
-                  </div>
-                </div>
-              </div>
-              <div className="bg-white rounded-2xl shadow-lg p-6">
-                <h2 className="text-2xl font-bold text-[#2c5530] mb-4">
-                  Top Goals
-                </h2>
-                <div className="space-y-4">
-                  {farmerData.goals.map((goal, index) => (
-                    <div key={index} className="flex items-center gap-3">
-                      <div className="w-8 h-8 rounded-full bg-[#4a8b3f] text-white flex items-center justify-center font-bold">
-                        {index + 1}
-                      </div>
-                      <span className="text-gray-700">{goal.type}</span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-              <div className="md:col-span-2 bg-white rounded-2xl shadow-lg p-6">
-                <h2 className="text-2xl font-bold text-[#2c5530] mb-4">
-                  Current Challenges
-                </h2>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  {farmerData.challenges.map((challenge, index) => (
-                    <div key={index} className="flex items-center gap-2">
-                      <svg
-                        className="w-5 h-5 text-[#4a8b3f]"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth="2"
-                          d="M12 6v6m0 0v6m0-6h6m-6 0H6"
-                        />
-                      </svg>
-                      <span className="text-gray-700">
-                        {challenge.type}
-                        {challenge.details && ` - ${challenge.details}`}
-                      </span>
-                    </div>
-                  ))}
-                </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <FarmOperationsAndStrategy
+                  challenges={stats?.challenges}
+                  goals={stats?.goals}
+                  technology={stats?.technology}
+                />
               </div>
             </div>
-          )}
-          {activeView === "analysis" && (
-            <div className="bg-white rounded-2xl shadow-lg p-6">
-              <h2 className="text-2xl font-bold text-[#2c5530] mb-4">
-                AI Analysis
-              </h2>
-              <p className="text-gray-600">
-                AI analysis content will be displayed here.
-              </p>
-            </div>
-          )}
-          {activeView === "reports" && (
-            <div className="bg-white rounded-2xl shadow-lg p-6">
-              <h2 className="text-2xl font-bold text-[#2c5530] mb-4">
-                Reports
-              </h2>
-              <p className="text-gray-600">
-                Reports content will be displayed here.
-              </p>
-            </div>
-          )}
-        </div>
+          ) : selectedMenuItem === "recommend-crop" ? (
+            <RecommendCrop />
+          ) : selectedMenuItem === "recommend-fertilizer" ? (
+            <RecommendFertilizer />
+          ) : selectedMenuItem === "predict-pest" ? (
+            <PredictPest />
+          ) : selectedMenuItem === "predict-disease" ? (
+            <PredictDisease />
+          ) : null}
+        </main>
       </div>
     </div>
   );
