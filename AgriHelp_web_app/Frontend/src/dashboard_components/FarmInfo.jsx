@@ -1,5 +1,8 @@
 //FarmInfo.jsx
 const FarmInfo= ({ farmData, currentCrops, plannedCrops })=> {
+  console.log(farmData);
+  console.log(currentCrops);
+  console.log(plannedCrops);
   return (
     <div className="bg-white shadow rounded-lg p-6">
       <h2 className="text-2xl font-semibold text-gray-800 mb-4">
@@ -12,8 +15,8 @@ const FarmInfo= ({ farmData, currentCrops, plannedCrops })=> {
           <div>
             <p className="text-sm text-gray-500">Farm Size</p>
             <p className="text-gray-800 font-medium">
-              {farmData?.farm_size
-                ? `${farmData.farm_size} ${farmData.farm_size_unit}`
+              {farmData?.farmSize
+                ? `${farmData?.farmSize} ${farmData?.farmSizeUnit}`
                 : "Not provided"}
             </p>
           </div>
@@ -24,7 +27,7 @@ const FarmInfo= ({ farmData, currentCrops, plannedCrops })=> {
           <div>
             <p className="text-sm text-gray-500">Farming Type</p>
             <p className="text-gray-800 font-medium">
-              {farmData?.farming_type || "Not provided"}
+              {farmData?.farmingType || "Not provided"}
             </p>
           </div>
         </div>
@@ -41,7 +44,7 @@ const FarmInfo= ({ farmData, currentCrops, plannedCrops })=> {
                       key={index}
                       className="inline-flex items-center px-2.5 py-0.5 rounded-full text-sm font-medium bg-green-100 text-green-800"
                     >
-                      {crop.crop_name}
+                      {crop}
                     </span>
                   ))}
                 </div>
@@ -64,7 +67,7 @@ const FarmInfo= ({ farmData, currentCrops, plannedCrops })=> {
                       key={index}
                       className="inline-flex items-center px-2.5 py-0.5 rounded-full text-sm font-medium bg-blue-100 text-blue-800"
                     >
-                      {crop.crop_name}
+                      {crop}
                     </span>
                   ))}
                 </div>

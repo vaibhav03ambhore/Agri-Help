@@ -96,8 +96,10 @@ const Login = () => {
         credentials: 'include',
       });
 
+      
       if (!response.ok) {
-        throw new Error("Failed to verify OTP");
+        const responseData = await response.json();
+        throw new Error(responseData.error|| "Failed to verify OTP");
       }
 
       const data = await response.json();

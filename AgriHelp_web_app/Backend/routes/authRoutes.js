@@ -4,5 +4,6 @@ import { handleOTP, logout } from "../controllers/authController.js";
 
 const router = express.Router();
 router.post("/handle-otp", handleOTP);
-router.post("/logout", logout);
+router.post("/auth/logout", logout);
+
 export default router;
