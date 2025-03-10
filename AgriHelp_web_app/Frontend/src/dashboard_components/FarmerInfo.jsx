@@ -1,5 +1,6 @@
 //FarmerInfo.jsx
 const FarmerInfo=({ farmerData })=> {
+  console.log(farmerData);
   return (
     <div className="bg-white shadow rounded-lg p-6">
       <h2 className="text-2xl font-semibold text-gray-800 mb-4">
@@ -11,7 +12,7 @@ const FarmerInfo=({ farmerData })=> {
           <div>
             <p className="text-sm text-gray-500">Name</p>
             <p className="text-gray-800 font-medium">
-              {farmerData?.full_name || "Not provided"}
+              {farmerData?.fullName || "Not provided"}
             </p>
           </div>
         </div>
@@ -31,7 +32,7 @@ const FarmerInfo=({ farmerData })=> {
           <div>
             <p className="text-sm text-gray-500">Contact Number</p>
             <p className="text-gray-800 font-medium">
-              {farmerData?.contact_number || "Not provided"}
+              {farmerData?.contactNumber || "Not provided"}
             </p>
           </div>
         </div>

@@ -14,7 +14,9 @@ const Dashboard = () => {
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [selectedMenuItem, setSelectedMenuItem] = useState("profile");
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [loggingOut, setLoggingOut] = useState(false);
   
+
   const loadDashboard = async () => {
     try {
       setLoading(true);
@@ -23,35 +25,73 @@ const Dashboard = () => {
       const response = await fetch("/api/get-farmer-profile", {
         credentials: 'include'
       });
-      
-      if (!response.ok) throw new Error('Failed to fetch profile');
-      
+      // Parse the response first
       const data = await response.json();
+      console.log("status of success:", data.success);
+      console.log("profile data:", data); // Use comma instead of + for better logging
 
       if (!data.success || !data.data) {
         setError("Farmer profile not found");
         return;
       }
 
+      // Now you can access the profile data using data.data
+      const profileData = data.data;
+      console.log("profileData:", profileData);
+
       const transformedData = {
         profile: {
-          ...data.data.basicInfo,
-          ...data.data.farmDetails,
-          technology: data.data.technology
+          ...profileData.basicInfo,
+          ...profileData.farmDetails,
+          technology: profileData.technology
         },
-        currentCrops: data.data.farmDetails.currentCrops,
-        plannedCrops: data.data.farmDetails.plannedCrops,
-        challenges: data.data.challenges,
-        goals: data.data.goals
+        currentCrops: profileData.farmDetails.currentCrops,
+        plannedCrops: profileData.farmDetails.plannedCrops,
+        challenges: profileData.challenges,
+        goals: profileData.goals,
+        cropSelections: profileData.cropSelections
       };
+      
+      console.log("Transformed data:", transformedData);
 
       setStats(transformedData);
-
     } catch (err) {
       console.error(err);
       setError(err.message || "Failed to load dashboard data");
     } finally {
       setLoading(false);
+    }
+  };
+
+  // Logout functionality
+  const handleLogout = async () => {
+    try {
+      setLoggingOut(true);
+      const response = await fetch("/api/auth/logout", {
+        method: "POST",
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json"
+        }
+      });
+      
+      const data = await response.json();
+      
+      if (data.success) {
+        // Redirect to login page after successful logout
+        window.location.href = "/account/signin";
+      } else {
+        console.error("Logout failed:", data.message);
+        // Still redirect to login page even if logout fails on the server
+        // This ensures the user can start a new session
+        window.location.href = "/account/signin";
+      }
+    } catch (err) {
+      console.error("Error during logout:", err);
+      // Redirect anyway to let the user start fresh
+      window.location.href = "/account/signin";
+    } finally {
+      setLoggingOut(false);
     }
   };
 
@@ -66,6 +106,18 @@ const Dashboard = () => {
   useEffect(() => {
     loadDashboard();
   }, []);
+  
+  const handleCropSubmit = (data) => {
+    // Handle the crop recommendation submission
+    console.log("Crop recommendation data:", data);
+    // Add your logic here to process the crop recommendation data
+  };
+  
+  const handleFertilizerSubmit = (data) => {
+    // Handle the fertilizer recommendation submission
+    console.log("Fertilizer recommendation data:", data);
+    // Add your logic here to process the fertilizer recommendation data
+  };
 
   if (loading) {
     return (
@@ -91,7 +143,8 @@ const Dashboard = () => {
       </div>
     );
   }
-
+ 
+  console.log("stats:", stats);
   return (
     <div className="min-h-screen bg-gray-50 flex">
       {/* Mobile Header */}
@@ -172,12 +225,13 @@ const Dashboard = () => {
               <span>Predict Plant Disease</span>
             </button>
             <button 
-              onClick={() => (window.location.href="/account/logout")}
-              className="flex items-center space-x-2 p-3 rounded-lg cursor-pointer w-full text-red-600"
+              onClick={handleLogout}
+              disabled={loggingOut}
+              className="flex items-center space-x-2 p-3 rounded-lg cursor-pointer w-full text-red-600 disabled:opacity-50"
               title="Logout"
             >
-              <i className="fas fa-sign-out-alt"></i>
-              <span>Logout</span>
+              <i className={`fas ${loggingOut ? "fa-spinner fa-spin" : "fa-sign-out-alt"}`}></i>
+              <span>{loggingOut ? "Logging out..." : "Logout"}</span>
             </button>
           </nav>
         </div>
@@ -270,12 +324,13 @@ const Dashboard = () => {
               </button>
               <div className="flex-1"></div>
               <button 
-                onClick={() => (window.location.href="/account/logout")}
-                className="flex items-center space-x-2 p-3 rounded-lg cursor-pointer w-full hover:text-red-600 mt-auto"
+                onClick={handleLogout}
+                disabled={loggingOut}
+                className={`flex items-center space-x-2 p-3 rounded-lg cursor-pointer w-full hover:text-red-600 mt-auto ${loggingOut ? 'text-red-400' : ''} disabled:opacity-50`}
                 title="Logout"
               >
-                <i className="fas fa-sign-out-alt"></i>
-                {sidebarOpen && <span>Logout</span>}
+                <i className={`fas ${loggingOut ? "fa-spinner fa-spin" : "fa-sign-out-alt"}`}></i>
+                {sidebarOpen && <span>{loggingOut ? "Logging out..." : "Logout"}</span>}
               </button>
             </nav>
           </div>
@@ -315,23 +370,44 @@ const Dashboard = () => {
                 <FarmInfo
                   farmData={stats?.profile}
                   currentCrops={stats?.currentCrops || []}
-                  plannedCrops={stats?.currentCrops?.filter(
-                    (crop) => crop.is_planned
-                  )||[]}
+                  plannedCrops={stats?.plannedCrops||[]}
                 />
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <FarmOperationsAndStrategy
                   challenges={stats?.challenges}
                   goals={stats?.goals}
-                  technology={stats?.technology}
+                  technology={stats?.profile?.technology}
                 />
               </div>
             </div>
           ) : selectedMenuItem === "recommend-crop" ? (
-            <RecommendCrop />
+            <RecommendCrop 
+              onSubmit={handleCropSubmit} 
+              initialData={{
+                "Soil_color": "Black",
+                "Nitrogen": 80,
+                "Phosphorus": 50,
+                "Potassium": 40,
+                "pH": 6.5,
+                "Rainfall": 100,
+                "Temperature": 25
+              }}
+            />
           ) : selectedMenuItem === "recommend-fertilizer" ? (
-            <RecommendFertilizer />
+            <RecommendFertilizer 
+              onSubmit={handleFertilizerSubmit} 
+              initialData={{
+                "Nitrogen": 80,
+                "Phosphorus": 50,
+                "Potassium": 40,
+                "pH": 6.5,
+                "Rainfall": 100,
+                "Temperature": 25,
+                "Soil_color": "Black",
+                "Crop": "Wheat"
+              }}
+            />
           ) : selectedMenuItem === "predict-pest" ? (
             <PredictPest />
           ) : selectedMenuItem === "predict-disease" ? (

@@ -5,6 +5,10 @@ const FarmOperationsAndStrategy=({ challenges, goals, technology })=> {
     return priorities[index] || "";
   };
 
+  console.log(challenges);
+  console.log(goals);
+  console.log(technology);
+
   return (
     <div className="bg-white shadow rounded-lg p-6">
       <h2 className="text-2xl font-semibold text-gray-800 mb-4">

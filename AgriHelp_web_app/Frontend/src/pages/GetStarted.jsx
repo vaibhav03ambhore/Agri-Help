@@ -79,14 +79,14 @@ const GetStarted=()=> {
         }),
         credentials: 'include',
       });
-
       if (!response.ok) {
-        throw new Error("Failed to submit form");
+        const responseData = await response.json();
+        throw new Error(responseData.error|| "Failed to submit form");
       }
 
       setSuccess(true);
     } catch (err) {
-      setError("Failed to submit form. "+err.message);
+      setError(err.message);
       console.error(err);
     } finally {
       setLoading(false);
