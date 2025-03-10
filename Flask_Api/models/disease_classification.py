@@ -70,9 +70,14 @@ class DiseaseClassifier:
         self.loaded = False
         
     def load_model(self):
-        """Load the trained Keras model"""
+        """Load the TensorFlow Lite model"""
         try:
-            self.model = tf.keras.models.load_model('./model_weights/disease_classification.keras')
+            # TFLite models need a different loading approach
+            interpreter = tf.lite.Interpreter(model_path='./model_weights/disease_classification.tflite')
+            interpreter.allocate_tensors()
+            self.model = interpreter
+            self.input_details = interpreter.get_input_details()
+            self.output_details = interpreter.get_output_details()
             self.loaded = True
         except Exception as e:
             print("Error loading model:", e)
@@ -91,7 +96,6 @@ class DiseaseClassifier:
             return None
             
     def predict(self, image_bytes):
-        """Make prediction on processed image"""
         if not self.loaded:
             self.load_model()
             if not self.loaded:
@@ -102,7 +106,11 @@ class DiseaseClassifier:
             return {"error": "Invalid image file"}
             
         try:
-            predictions = self.model.predict(processed_img)
+            # TFLite inference
+            self.model.set_tensor(self.input_details[0]['index'], processed_img)
+            self.model.invoke()
+            predictions = self.model.get_tensor(self.output_details[0]['index'])
+            
             predicted_class = np.argmax(predictions[0])
             confidence = float(np.max(predictions[0]))
             
