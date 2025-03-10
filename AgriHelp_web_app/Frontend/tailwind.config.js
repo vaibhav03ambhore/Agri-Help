@@ -6,7 +6,20 @@ export default {
   
   ],
   theme: {
-    extend: {},
+    extend: {
+      transitionProperty: {
+        'width': 'width',
+        'margin': 'margin',
+        'transform': 'transform'
+      }
+    },
+  },
+  variants: {
+    extend: {
+      display: ['group-hover'],
+      transform: ['responsive'],
+      translate: ['responsive']
+    }
   },
   plugins: [],
 }

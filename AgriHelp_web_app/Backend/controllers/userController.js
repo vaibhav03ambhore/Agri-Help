@@ -42,3 +42,30 @@ export const createFarmerProfile = async (req, res) => {
     return res.status(500).json({ error: "Internal server error" });
   }
 };
+
+export const getFarmerProfile = async (req, res) => {
+  try {
+    const farmer = await User.findById(req.user._id)
+      .select('-__v -createdAt')
+      .lean();
+
+    if (!farmer) {
+      return res.status(404).json({ 
+        success: false,
+        error: "Farmer profile not found" 
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      data: farmer
+    });
+
+  } catch (error) {
+    console.error("Profile Fetch Error:", error);
+    res.status(500).json({
+      success: false,
+      error: "Server error while fetching profile"
+    });
+  }
+};
