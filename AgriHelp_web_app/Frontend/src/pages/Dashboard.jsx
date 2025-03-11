@@ -63,6 +63,10 @@ const Dashboard = () => {
     }
   };
 
+  const handleLogo=()=>{
+    window.location.href = "/"
+  }
+
   // Logout functionality
   const handleLogout = async () => {
     try {
@@ -79,17 +83,17 @@ const Dashboard = () => {
       
       if (data.success) {
         // Redirect to login page after successful logout
-        window.location.href = "/account/signin";
+        window.location.href = "/";
       } else {
         console.error("Logout failed:", data.message);
         // Still redirect to login page even if logout fails on the server
         // This ensures the user can start a new session
-        window.location.href = "/account/signin";
+        window.location.href = "/";
       }
     } catch (err) {
       console.error("Error during logout:", err);
       // Redirect anyway to let the user start fresh
-      window.location.href = "/account/signin";
+      window.location.href = "/";
     } finally {
       setLoggingOut(false);
     }
@@ -149,7 +153,9 @@ const Dashboard = () => {
     <div className="min-h-screen bg-gray-50 flex">
       {/* Mobile Header */}
       <div className="md:hidden fixed w-full bg-white shadow-md z-50 px-4 py-3 flex justify-between items-center">
-        <h1 className="text-xl font-semibold text-green-700">
+        <h1 className="text-xl font-semibold text-green-700" 
+          onClick={handleLogo}
+        >
           <i className="fas fa-leaf mr-2"></i>
           AgriHelp
         </h1>
@@ -257,7 +263,9 @@ const Dashboard = () => {
               ></i>
             </button>
             {sidebarOpen ? (
-              <h2 className="text-2xl font-bold text-green-700 mb-6">
+              <h2 className="text-2xl font-bold text-green-700 mb-6"
+              onClick={handleLogo}
+              >
                 <i className="fas fa-leaf mr-2"></i>
                 AgriHelp
               </h2>

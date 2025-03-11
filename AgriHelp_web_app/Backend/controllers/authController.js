@@ -46,9 +46,9 @@ export const handleOTP = async (req, res) => {
 
       try {
         console.log(`OTP for ${email || mobile}: ${newOTP}`);
-        // if (email) {
-        //   await sendEmailOTP(email, newOTP);
-        // } 
+        if (email) {
+          await sendEmailOTP(email, newOTP);
+        } 
         
         // if (mobile) {
         //   const fmobile = `+91${mobile}`;
