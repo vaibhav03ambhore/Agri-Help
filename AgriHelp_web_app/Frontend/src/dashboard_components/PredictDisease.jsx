@@ -184,8 +184,8 @@ const PredictDisease= ({ onSubmit, initialData })=> {
             <p className="text-3xl font-bold text-[#4a8b3f] mb-2">
               {prediction.name}
             </p>
-            <p className="text-sm text-[#3a6d31]">
-              Confidence: {prediction.confidence}%
+            <p className="text-3xl font-bold text-[#4a8b3f] mb-2">
+            Confidence: {prediction.confidence}% 
             </p>
           </div>
         )}

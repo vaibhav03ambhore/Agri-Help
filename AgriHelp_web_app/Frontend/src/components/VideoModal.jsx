@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 
 const VideoModal = ({ isOpen, onClose, videoUrl }) => {
   if (!isOpen) return null;
