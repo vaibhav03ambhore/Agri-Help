@@ -68,6 +68,7 @@ class DiseaseClassifier:
         ]
         self.img_size = (224, 224)
         self.loaded = False
+        self.load_model()
         
     def load_model(self):
         """Load the TensorFlow Lite model"""
