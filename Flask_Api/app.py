@@ -11,7 +11,12 @@ CORS(app)
 app.register_blueprint(disease_bp, url_prefix='/api/disease')
 app.register_blueprint(crop_bp, url_prefix='/api/crop')
 app.register_blueprint(fertilizer_bp, url_prefix='/api/fertilizer')
-app.register_blueprint(pest_bp, url_prefix='/api/pest') 
+app.register_blueprint(pest_bp, url_prefix='/api/pest')
+
+@app.route("/")
+def home():
+    return "Hello, homepage here! Your app is working!"
+
 
 if __name__ == '__main__':
     port = int(os.environ.get("PORT", 4000))
