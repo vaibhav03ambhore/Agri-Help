@@ -1,4 +1,5 @@
 # main.py
+import os
 from flask import Flask
 from api.routes import disease_bp, crop_bp, fertilizer_bp, pest_bp
 from flask_cors import CORS
@@ -23,4 +24,5 @@ print(tf.keras.utils.__file__)
 
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=4000, debug=True)
+    port = int(os.environ.get("PORT", 4000))
+    app.run(host='0.0.0.0', port=port, debug=True)
