@@ -13,16 +13,6 @@ app.register_blueprint(crop_bp, url_prefix='/api/crop')
 app.register_blueprint(fertilizer_bp, url_prefix='/api/fertilizer')
 app.register_blueprint(pest_bp, url_prefix='/api/pest') 
 
-print("Registered Routes:")
-for rule in app.url_map.iter_rules():
-    print(rule)
-
-import tensorflow as tf
-print(tf.__version__)
-print(tf.keras.utils.__file__)
-
-
-
 if __name__ == '__main__':
     port = int(os.environ.get("PORT", 4000))
     app.run(host='0.0.0.0', port=port, debug=True)
