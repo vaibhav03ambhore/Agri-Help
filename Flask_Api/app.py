@@ -19,6 +19,9 @@ def home():
 
 
 if __name__ == '__main__':
+    print("Waiting for app to initialize...")
+    time.sleep(30)  # Adjust the delay as needed
+    print("Starting app...")
     port = int(os.environ.get("PORT", 4000))
     print(f"Starting app on port {port}")
     app.run(host='0.0.0.0', port=port, debug=True)
