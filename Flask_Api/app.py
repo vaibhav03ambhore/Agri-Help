@@ -11,7 +11,7 @@ CORS(app)
 app.register_blueprint(disease_bp, url_prefix='/api/disease')
 app.register_blueprint(crop_bp, url_prefix='/api/crop')
 app.register_blueprint(fertilizer_bp, url_prefix='/api/fertilizer')
-app.register_blueprint(pest_bp, url_prefix='/api/pest')
+# app.register_blueprint(pest_bp, url_prefix='/api/pest')
 
 @app.route('/health')
 def health():
