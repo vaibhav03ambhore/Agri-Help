@@ -13,15 +13,12 @@ app.register_blueprint(crop_bp, url_prefix='/api/crop')
 app.register_blueprint(fertilizer_bp, url_prefix='/api/fertilizer')
 app.register_blueprint(pest_bp, url_prefix='/api/pest')
 
-@app.route("/")
-def home():
-    return "Hello, homepage here! Your app is working!"
+@app.route('/health')
+def health():
+    return 'OK', 200
 
 
 if __name__ == '__main__':
-    print("Waiting for app to initialize...")
-    time.sleep(30)  # Adjust the delay as needed
-    print("Starting app...")
     port = int(os.environ.get("PORT", 4000))
     print(f"Starting app on port {port}")
     app.run(host='0.0.0.0', port=port, debug=True)
