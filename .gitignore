@@ -1,6 +1,7 @@
 .venv/
 Flask_Api/venv_name/
 Flask_Api/models/__pycache__/
+Flask_Api/model_weights/insect_identification.keras
 Flask_Api/api/__pycache__/
 AgriHelp_web_app/node_modules/
 .env
