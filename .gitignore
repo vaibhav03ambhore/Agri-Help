@@ -1,5 +1,13 @@
 .venv/
 Flask_Api/venv_name/
+Flask_Api/microS1/__pycache__/
+Flask_Api/microS2/__pycache__/
+Flask_Api/microS3/__pycache__/
+Flask_Api/microS4/__pycache__/
+Flask_Api/microS1/myevn/
+Flask_Api/microS2/venv_name/
+Flask_Api/microS3/venv_name/
+Flask_Api/microS4/venv_name/
 Flask_Api/models/__pycache__/
 Flask_Api/api/__pycache__/
 AgriHelp_web_app/node_modules/
