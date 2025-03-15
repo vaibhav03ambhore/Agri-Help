@@ -6,6 +6,7 @@ import cors from 'cors';
 import userRoutes from './routes/userRoutes.js';
 import authRoutes from './routes/authRoutes.js';
 import { warmupServices } from './utils/warmupServices.js';
+import { contactForm } from './utils/contactForm.js';
 
 // Load .env file
 dotenv.config();
@@ -29,7 +30,8 @@ connectDB(MONGO_URI);
 // Routes
 app.use('/api', userRoutes);
 app.use('/api', authRoutes);
-app.get('/', warmupServices);
+app.get('/warmup', warmupServices);
+app.post('/api/submit-contact-form',contactForm);
 
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);

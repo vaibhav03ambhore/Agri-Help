@@ -31,7 +31,7 @@ const PredictDisease= ({ onSubmit, initialData })=> {
 
     try {
       const response = await fetch(
-        "http://127.0.0.1:4000/api/disease/predict",
+        'https://agri-help-wl8j.onrender.com/predict',
         {
           method: "POST",
           body: formData,

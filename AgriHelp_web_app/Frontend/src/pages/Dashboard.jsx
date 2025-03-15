@@ -6,6 +6,8 @@ import PredictDisease from "../dashboard_components/PredictDisease";
 import FarmOperationsAndStrategy from "../dashboard_components/FarmOperationsAndStrategy";
 import FarmerInfo from "../dashboard_components/FarmerInfo";
 import FarmInfo from "../dashboard_components/FarmInfo";
+import { warmupServices } from "../utils/apiService";
+
 
 const Dashboard = () => {
   const [stats, setStats] = useState(null);
@@ -27,8 +29,8 @@ const Dashboard = () => {
       });
       // Parse the response first
       const data = await response.json();
-      console.log("status of success:", data.success);
-      console.log("profile data:", data); // Use comma instead of + for better logging
+      // console.log("status of success:", data.success);
+      // console.log("profile data:", data); // Use comma instead of + for better logging
 
       if (!data.success || !data.data) {
         setError("Farmer profile not found");
@@ -37,7 +39,7 @@ const Dashboard = () => {
 
       // Now you can access the profile data using data.data
       const profileData = data.data;
-      console.log("profileData:", profileData);
+      // console.log("profileData:", profileData);
 
       const transformedData = {
         profile: {
@@ -52,7 +54,7 @@ const Dashboard = () => {
         cropSelections: profileData.cropSelections
       };
       
-      console.log("Transformed data:", transformedData);
+      // console.log("Transformed data:", transformedData);
 
       setStats(transformedData);
     } catch (err) {
@@ -107,7 +109,18 @@ const Dashboard = () => {
     }
   };
 
+
   useEffect(() => {
+    const initializeServices = async () => {
+      try {
+        await warmupServices();
+        console.log('Backend services initialized');
+      } catch (error) {
+        console.error('Failed to initialize backend services:', error);
+      }
+    };
+    
+    initializeServices();
     loadDashboard();
   }, []);
   
@@ -148,7 +161,7 @@ const Dashboard = () => {
     );
   }
  
-  console.log("stats:", stats);
+  // console.log("stats:", stats);
   return (
     <div className="min-h-screen bg-gray-50 flex">
       {/* Mobile Header */}

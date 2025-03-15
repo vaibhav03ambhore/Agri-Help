@@ -31,7 +31,7 @@ const PredictPest=({ onSubmit, initialData })=> {
     formData.append("image", selectedImage);
 
     try {
-      const response = await fetch("http://127.0.0.1:4000/api/pest/predict", {
+      const response = await fetch('https://agri-help-pest.onrender.com/predict', {
         method: "POST",
         body: formData,
       });
