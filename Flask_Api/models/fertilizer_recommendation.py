@@ -7,6 +7,7 @@ class FertilizerRecommender:
         self.model = None
         self.preprocessor = None
         self.loaded = False
+        self.load_models()
         
     def load_models(self):
         """Load model and preprocessor"""
