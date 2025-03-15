@@ -50,8 +50,13 @@ export const createFarmerProfile = async (req, res) => {
   }
 };
 
+
+
+
+
 export const getFarmerProfile = async (req, res) => {
   try {
+    
     const farmer = await User.findById(req.user._id)
       .select('-__v -createdAt')
       .lean();
@@ -62,7 +67,7 @@ export const getFarmerProfile = async (req, res) => {
         error: "Farmer profile not found" 
       });
     }
-
+    
     res.status(200).json({
       success: true,
       data: farmer
