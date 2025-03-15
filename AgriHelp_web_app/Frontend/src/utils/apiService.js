@@ -2,7 +2,7 @@
 
 export const warmupServices = async () => {
   try {
-    const response = await fetch(`/warmup`, {
+    const response = await fetch(`https://agri-help-backend.onrender.com/warmup`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
@@ -25,7 +25,7 @@ export const warmupServices = async () => {
 // Add other API services here
 export const submitContactForm = async (formData) => {
   try {
-    const response = await fetch(`/api/submit-contact-form`, {
+    const response = await fetch(`https://agri-help-backend.onrender.com/api/submit-contact-form`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
