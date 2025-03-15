@@ -5,6 +5,7 @@ import cookieParser from 'cookie-parser';
 import cors from 'cors';
 import userRoutes from './routes/userRoutes.js';
 import authRoutes from './routes/authRoutes.js';
+import { warmupServices } from './utils/warmupServices.js';
 
 // Load .env file
 dotenv.config();
@@ -28,6 +29,7 @@ connectDB(MONGO_URI);
 // Routes
 app.use('/api', userRoutes);
 app.use('/api', authRoutes);
+app.get('/', warmupServices);
 
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
