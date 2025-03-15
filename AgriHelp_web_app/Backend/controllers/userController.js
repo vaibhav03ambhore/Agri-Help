@@ -35,7 +35,7 @@ export const createFarmerProfile = async (req, res) => {
     res.cookie('access_token', token, {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
-      sameSite: 'strict',
+      sameSite: 'None',
       maxAge: 24 * 60 * 60 * 1000 // 1 day
     });
     return res.status(201).json({

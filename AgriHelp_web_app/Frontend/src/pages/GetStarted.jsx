@@ -45,7 +45,7 @@ const GetStarted=()=> {
     setError(null);
 
     try {
-      const response = await fetch("/api/create-farmer-profile", {
+      const response = await fetch("https://agri-help-backend.onrender.com/api/create-farmer-profile", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

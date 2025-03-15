@@ -24,7 +24,7 @@ const Dashboard = () => {
       setLoading(true);
       setError(null);
       
-      const response = await fetch("/api/get-farmer-profile", {
+      const response = await fetch("https://agri-help-backend.onrender.com/api/get-farmer-profile", {
         credentials: 'include'
       });
       // Parse the response first
@@ -73,7 +73,7 @@ const Dashboard = () => {
   const handleLogout = async () => {
     try {
       setLoggingOut(true);
-      const response = await fetch("/api/auth/logout", {
+      const response = await fetch("https://agri-help-backend.onrender.com/api/auth/logout", {
         method: "POST",
         credentials: "include",
         headers: {

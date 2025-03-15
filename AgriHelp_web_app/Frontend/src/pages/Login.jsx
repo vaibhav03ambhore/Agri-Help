@@ -48,7 +48,7 @@ const Login = () => {
         }
       }
 
-      const response = await fetch("/api/handle-otp", {
+      const response = await fetch("https://agri-help-backend.onrender.com/api/handle-otp", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -84,7 +84,7 @@ const Login = () => {
         throw new Error("Please enter the OTP");
       }
 
-      const response = await fetch("/api/handle-otp", {
+      const response = await fetch("https://agri-help-backend.onrender.com/api/handle-otp", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
