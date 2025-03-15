@@ -15,6 +15,7 @@ class CropRecommender:
             5: 'Wheat', 6: 'Groundnut', 7: 'Maize', 8: 'Potato',
             9: 'Urad', 10: 'Tomato', 11: 'Soybean', 12: 'Turmeric', 13: 'Grapes'
         }
+        self.load_model()
         
     def load_model(self):
         """Load the trained model"""

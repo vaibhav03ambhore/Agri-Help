@@ -9,6 +9,7 @@ Flask_Api/microS2/venv_name/
 Flask_Api/microS3/venv_name/
 Flask_Api/microS4/venv_name/
 Flask_Api/models/__pycache__/
+Flask_Api/model_weights/insect_identification.keras
 Flask_Api/api/__pycache__/
 AgriHelp_web_app/node_modules/
 .env
