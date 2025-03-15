@@ -29,7 +29,7 @@ connectDB(MONGO_URI);
 // Routes
 app.use('/api', userRoutes);
 app.use('/api', authRoutes);
-app.get('/', warmupServices);
+app.get('/warmup', warmupServices);
 
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
