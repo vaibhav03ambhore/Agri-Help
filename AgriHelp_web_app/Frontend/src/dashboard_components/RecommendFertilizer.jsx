@@ -31,7 +31,7 @@ const RecommendFertilizer=({ onSubmit, initialData }) =>{
 
     try {
       const response = await fetch(
-        "http://127.0.0.1:4000/api/fertilizer/predict",
+        'https://agri-help-fertilizer.onrender.com/predict',
         {
           method: "POST",
           headers: {

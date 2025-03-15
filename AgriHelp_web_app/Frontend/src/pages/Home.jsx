@@ -3,7 +3,7 @@ import { useEffect } from "react";
 import { useCallback } from "react";
 import { useState } from "react";
 import VideoModal from "../components/VideoModal";
-
+import { submitContactForm } from "../utils/apiService";
 
 const Home = () => {
   const [isVideoModalOpen, setIsVideoModalOpen] = useState(false);
@@ -12,6 +12,7 @@ const Home = () => {
     email: "",
     message: "",
   });
+
   const [newsletterEmail, setNewsletterEmail] = useState("");
   const [formErrors, setFormErrors] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -23,6 +24,7 @@ const Home = () => {
   const totalSlides = 4;
   const sliderRef = useRef(null);
   const demoVideoUrl = "https://www.youtube.com/embed/Nf8mL8vaMIY?si=CT7uG9YtKRr-flss";
+
   const checkScroll = useCallback(() => {
     if (sliderRef.current) {
       const { scrollLeft, scrollWidth, clientWidth } = sliderRef.current;
@@ -121,10 +123,7 @@ const Home = () => {
       });
     }
   };
-
-
-
-     
+  
   
   const validateForm = () => {
     const errors = {};
@@ -137,6 +136,7 @@ const Home = () => {
     if (!contactForm.message.trim()) errors.message = "Message is required";
     return errors;
   };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     const errors = validateForm();
@@ -145,15 +145,9 @@ const Home = () => {
     if (Object.keys(errors).length === 0) {
       setIsSubmitting(true);
       try {
-        const response = await fetch("/api/submit-contact-form", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(contactForm),
-        });
-
-        const result = await response.json();
+        // Use the API service instead of direct fetch
+        const result = await submitContactForm(contactForm);
+        
         if (result.success) {
           setSubmitSuccess(true);
           setContactForm({ name: "", email: "", message: "" });
@@ -169,6 +163,7 @@ const Home = () => {
       }
     }
   };
+
   const handleNewsletterSubmit = async (e) => {
     e.preventDefault();
     setNewsletterSuccess(true);
