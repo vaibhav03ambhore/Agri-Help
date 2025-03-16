@@ -1,6 +1,7 @@
 import { useState,useEffect } from "react";
 import { api } from '../utils/apiService';
 import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 const Login = () => {
   const [method, setMethod] = useState("email");
@@ -11,6 +12,8 @@ const Login = () => {
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
   const [errorTimer, setErrorTimer] = useState(null);
+
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (error) {
@@ -87,7 +90,7 @@ const Login = () => {
       const data = await api.verifyOTP(verifyData);
       
       if (data && data.success) {
-        window.location.href = "/dashboard";
+        navigate("/dashboard");
       } else {
         throw new Error(data?.error || "Invalid OTP");
       }
