@@ -1,4 +1,5 @@
 import { useState,useEffect } from "react";
+import { api } from '../utils/apiService';
 
 const Login = () => {
   const [method, setMethod] = useState("email");
@@ -48,21 +49,13 @@ const Login = () => {
         }
       }
 
-      const response = await fetch("https://agri-help-backend.onrender.com/api/handle-otp", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          type: "send",
-          email: method === "email" ? email : null,
-          mobile: method === "mobile" ? mobile : null,
-        }),
-      });
+      const otpData = {
+        email: method === "email" ? email : null,
+        mobile: method === "mobile" ? mobile : null,
+      };
 
-      if (!response.ok) {
-        throw new Error("Failed to send OTP");
-      }
-
-      const data = await response.json();
+      const data = await api.sendOTP(otpData);
+      
       if (data && data.success) {
         setStep("otp");
       } else {
@@ -84,25 +77,14 @@ const Login = () => {
         throw new Error("Please enter the OTP");
       }
 
-      const response = await fetch("https://agri-help-backend.onrender.com/api/handle-otp", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          type: "verify",
-          email: method === "email" ? email : null,
-          mobile: method === "mobile" ? mobile : null,
-          otp,
-        }),
-        credentials: 'include',
-      });
+      const verifyData = {
+        email: method === "email" ? email : null,
+        mobile: method === "mobile" ? mobile : null,
+        otp,
+      };
 
+      const data = await api.verifyOTP(verifyData);
       
-      if (!response.ok) {
-        const responseData = await response.json();
-        throw new Error(responseData.error|| "Failed to verify OTP");
-      }
-
-      const data = await response.json();
       if (data && data.success) {
         window.location.href = "/dashboard";
       } else {

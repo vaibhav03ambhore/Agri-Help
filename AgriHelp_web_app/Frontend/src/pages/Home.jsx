@@ -3,7 +3,7 @@ import { useEffect } from "react";
 import { useCallback } from "react";
 import { useState } from "react";
 import VideoModal from "../components/VideoModal";
-import { submitContactForm } from "../utils/apiService";
+import { api } from '../utils/apiService';
 
 const Home = () => {
   const [isVideoModalOpen, setIsVideoModalOpen] = useState(false);
@@ -145,9 +145,9 @@ const Home = () => {
     if (Object.keys(errors).length === 0) {
       setIsSubmitting(true);
       try {
-        // Use the API service instead of direct fetch
-        const result = await submitContactForm(contactForm);
-        
+        // Use the API service instead of direct import
+        const result = await api.submitContactForm(contactForm);
+
         if (result.success) {
           setSubmitSuccess(true);
           setContactForm({ name: "", email: "", message: "" });
