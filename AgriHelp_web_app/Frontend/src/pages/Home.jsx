@@ -147,8 +147,9 @@ const Home = () => {
       try {
         // Use the API service instead of direct import
         const result = await api.submitContactForm(contactForm);
-
-        if (result.success) {
+        
+        console.log(result.message);
+        if (result.success|| result.message) {
           setSubmitSuccess(true);
           setContactForm({ name: "", email: "", message: "" });
           setTimeout(() => setSubmitSuccess(false), 3000);
