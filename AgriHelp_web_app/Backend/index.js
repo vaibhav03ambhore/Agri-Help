@@ -32,6 +32,7 @@ connectDB(MONGO_URI);
 app.use('/api', userRoutes);
 app.use('/api', authRoutes);
 app.get('/api/warmup', warmupServices);
+warmupServices();
 app.post('/api/submit-contact-form',contactForm);
 app.get('/health', (req, res) => {
   res.status(200).json({ status: 'OK' });
