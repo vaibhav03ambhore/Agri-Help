@@ -8,6 +8,7 @@ import FarmerInfo from "../dashboard_components/FarmerInfo";
 import FarmInfo from "../dashboard_components/FarmInfo";
 import { api } from '../utils/apiService';
 import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 const Dashboard = () => {
   const [stats, setStats] = useState(null);
@@ -18,6 +19,7 @@ const Dashboard = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [loggingOut, setLoggingOut] = useState(false);
   
+  const navigate = useNavigate();
 
   const loadDashboard = async () => {
     try {
@@ -62,7 +64,7 @@ const Dashboard = () => {
   };
 
   const handleLogo=()=>{
-    window.location.href = "/"
+    navigate('/');
   }
 
   // Logout functionality
@@ -73,17 +75,17 @@ const Dashboard = () => {
       
       if (data.success) {
         // Redirect to login page after successful logout
-        window.location.href = "/";
+        navigate("/");
       } else {
         console.error("Logout failed:", data.message);
         // Still redirect to login page even if logout fails on the server
         // This ensures the user can start a new session
-        window.location.href = "/";
+        navigate("/");
       }
     } catch (err) {
       console.error("Error during logout:", err);
       // Redirect anyway to let the user start fresh
-      window.location.href = "/";
+      navigate("/");
     } finally {
       setLoggingOut(false);
     }
