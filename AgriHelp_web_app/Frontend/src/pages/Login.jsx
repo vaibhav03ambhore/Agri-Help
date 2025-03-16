@@ -1,5 +1,6 @@
 import { useState,useEffect } from "react";
 import { api } from '../utils/apiService';
+import { Link } from "react-router-dom";
 
 const Login = () => {
   const [method, setMethod] = useState("email");
@@ -221,12 +222,12 @@ const Login = () => {
 
             <p className="text-center text-gray-600 text-sm">
               Don't have an account?{" "}
-              <a
-                href="/get-started"
+              <Link
+                to="/get-started"
                 className="text-[#4a8b3f] hover:text-[#3a6d31]"
               >
                 Sign up
-              </a>
+              </Link>
             </p>
           </div>
         </div>

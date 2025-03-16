@@ -5,6 +5,7 @@ import ChallengesGoalsStep from "../components/ChallengesGoalsStep";
 import TechnologyStep from "../components/TechnologyStep";
 import FarmDetailsStep from "../components/FarmerDetailStep";
 import { api } from '../utils/apiService';
+import { Link } from "react-router-dom";
 
 const GetStarted=()=> {
   const [step, setStep] = useState(1);
@@ -119,18 +120,16 @@ const GetStarted=()=> {
               optimize your farming operations.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <a
-                href="/"
-                className="bg-[#4a8b3f] hover:bg-[#3a6d31] text-white font-bold py-3 px-8 rounded-lg transition duration-300"
-              >
+              <Link to="/" className="bg-[#4a8b3f] hover:bg-[#3a6d31] text-white font-bold py-3 px-8 rounded-lg transition duration-300">
                 Return to Home
-              </a>
-              <a
-                href="/dashboard"
+              </Link>
+              
+              <Link
+                to="/dashboard"
                 className="border-2 border-[#4a8b3f] text-[#4a8b3f] hover:bg-[#4a8b3f] hover:text-white font-bold py-3 px-8 rounded-lg transition duration-300"
               >
                 View Dashboard
-              </a>
+              </Link>
             </div>
           </div>
         </div>
@@ -150,7 +149,7 @@ const GetStarted=()=> {
           </p>
         </div>
         <div className="fixed bottom-4 right-4 z-50 group">
-          <a href="/account/signin" className="block">
+          <Link to="/account/signin" className="block">
             <div className="bg-[#4a8b3f] p-2 rounded-full cursor-pointer hover:bg-[#3a6d31] transition-colors relative">
               <svg
                 className="w-8 h-8 text-white"
@@ -169,7 +168,7 @@ const GetStarted=()=> {
                 Login
               </div>
             </div>
-          </a>
+          </Link>
         </div>
       </div>
 

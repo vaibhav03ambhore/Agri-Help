@@ -7,6 +7,7 @@ import FarmOperationsAndStrategy from "../dashboard_components/FarmOperationsAnd
 import FarmerInfo from "../dashboard_components/FarmerInfo";
 import FarmInfo from "../dashboard_components/FarmInfo";
 import { api } from '../utils/apiService';
+import { Link } from "react-router-dom";
 
 const Dashboard = () => {
   const [stats, setStats] = useState(null);
@@ -138,12 +139,11 @@ const Dashboard = () => {
     return (
       <div className="min-h-screen bg-gray-50 flex flex-col items-center justify-center gap-4">
         <div className="text-red-600 text-xl">{error}</div>
-        <a
-          href="/get-started"
-          className="bg-green-700 hover:bg-green-800 text-white font-bold py-2 px-6 rounded-lg transition duration-300"
-        >
+        
+        <Link to="/get-started" className="bg-green-700 hover:bg-green-800 text-white font-bold py-2 px-6 rounded-lg transition duration-300">
           Create Profile
-        </a>
+        </Link>
+  
       </div>
     );
   }
