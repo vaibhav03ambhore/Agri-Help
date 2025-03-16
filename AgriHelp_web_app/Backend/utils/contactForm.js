@@ -1,10 +1,14 @@
 
-export const contactForm = async (formData) => {
+export const contactForm = async (req,res) => {
+  const { name, email, message } = req.body;
+
   try {
-    console.log("not created")
-    return await response.json();
+    // Simulate saving to a database or sending an email
+    console.log('Contact Form Submitted:', { name, email, message });
+    
+    // Send success response
+    res.status(200).json({ message: 'Form submitted successfully' });
   } catch (error) {
-    console.error('Error submitting form:', error);
-    throw error;
-  }
+    res.status(500).json({ error: 'Server error' });
+  }  
 };
