@@ -6,8 +6,7 @@ import PredictDisease from "../dashboard_components/PredictDisease";
 import FarmOperationsAndStrategy from "../dashboard_components/FarmOperationsAndStrategy";
 import FarmerInfo from "../dashboard_components/FarmerInfo";
 import FarmInfo from "../dashboard_components/FarmInfo";
-import { warmupServices } from "../utils/apiService";
-
+import { api } from '../utils/apiService';
 
 const Dashboard = () => {
   const [stats, setStats] = useState(null);
@@ -24,11 +23,7 @@ const Dashboard = () => {
       setLoading(true);
       setError(null);
       
-      const response = await fetch("https://agri-help-backend.onrender.com/api/get-farmer-profile", {
-        credentials: 'include'
-      });
-      // Parse the response first
-      const data = await response.json();
+      const data = await api.getFarmerProfile();
       // console.log("status of success:", data.success);
       // console.log("profile data:", data); // Use comma instead of + for better logging
 
@@ -73,15 +68,7 @@ const Dashboard = () => {
   const handleLogout = async () => {
     try {
       setLoggingOut(true);
-      const response = await fetch("https://agri-help-backend.onrender.com/api/auth/logout", {
-        method: "POST",
-        credentials: "include",
-        headers: {
-          "Content-Type": "application/json"
-        }
-      });
-      
-      const data = await response.json();
+      const data = await api.logout();
       
       if (data.success) {
         // Redirect to login page after successful logout
@@ -113,7 +100,7 @@ const Dashboard = () => {
   useEffect(() => {
     const initializeServices = async () => {
       try {
-        await warmupServices();
+        await api.warmupServices();
         console.log('Backend services initialized');
       } catch (error) {
         console.error('Failed to initialize backend services:', error);

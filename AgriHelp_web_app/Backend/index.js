@@ -16,7 +16,8 @@ const app = express();
 // Middlewares
 app.use(cors({
   origin: process.env.CORS_ORIGIN,
-  credentials: true
+  credentials: true,
+  allowedHeaders: ['Content-Type', 'Authorization'],
 }));
 app.use(express.json({ limit: "30mb" }));
 app.use(express.urlencoded({ extended: true, limit: "30mb" }));
@@ -30,8 +31,11 @@ connectDB(MONGO_URI);
 // Routes
 app.use('/api', userRoutes);
 app.use('/api', authRoutes);
-app.get('/warmup', warmupServices);
+app.get('/api/warmup', warmupServices);
 app.post('/api/submit-contact-form',contactForm);
+app.get('/health', (req, res) => {
+  res.status(200).json({ status: 'OK' });
+});
 
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);

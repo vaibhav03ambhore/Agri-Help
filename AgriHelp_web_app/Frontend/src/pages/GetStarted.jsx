@@ -4,6 +4,7 @@ import BasicInformationStep from "../components/BasicInformationStep";
 import ChallengesGoalsStep from "../components/ChallengesGoalsStep";
 import TechnologyStep from "../components/TechnologyStep";
 import FarmDetailsStep from "../components/FarmerDetailStep";
+import { api } from '../utils/apiService';
 
 const GetStarted=()=> {
   const [step, setStep] = useState(1);
@@ -45,45 +46,35 @@ const GetStarted=()=> {
     setError(null);
 
     try {
-      const response = await fetch("https://agri-help-backend.onrender.com/api/create-farmer-profile", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          basicInfo: formData.basicInfo,
-          farmDetails: formData.farmDetails, 
-          technology: formData.technology, 
-          cropSelections: [
-            ...formData.farmDetails.currentCrops.map((crop) => ({
-              name: crop,
-              isCurrent: true,
-              isPlanned: false,
-              growingSeason: formData.farmDetails.growingSeason,
-            })),
-            ...formData.farmDetails.plannedCrops.map((crop) => ({
-              name: crop,
-              isCurrent: false,
-              isPlanned: true,
-              growingSeason: formData.farmDetails.growingSeason,
-            })),
-          ],
-          challenges: formData.challenges.map((challenge) => ({
-            type: challenge,
-            details: challenge === "Other" ? formData.challengeOther : "",
+      const profileData = {
+        basicInfo: formData.basicInfo,
+        farmDetails: formData.farmDetails, 
+        technology: formData.technology, 
+        cropSelections: [
+          ...formData.farmDetails.currentCrops.map((crop) => ({
+            name: crop,
+            isCurrent: true,
+            isPlanned: false,
+            growingSeason: formData.farmDetails.growingSeason,
           })),
-          goals: formData.goals.map((goal, index) => ({
-            type: goal,
-            priority: index + 1,
+          ...formData.farmDetails.plannedCrops.map((crop) => ({
+            name: crop,
+            isCurrent: false,
+            isPlanned: true,
+            growingSeason: formData.farmDetails.growingSeason,
           })),
-        }),
-        credentials: 'include',
-      });
-      if (!response.ok) {
-        const responseData = await response.json();
-        throw new Error(responseData.error|| "Failed to submit form");
-      }
-
+        ],
+        challenges: formData.challenges.map((challenge) => ({
+          type: challenge,
+          details: challenge === "Other" ? formData.challengeOther : "",
+        })),
+        goals: formData.goals.map((goal, index) => ({
+          type: goal,
+          priority: index + 1,
+        })),
+      };
+      
+      await api.createFarmerProfile(profileData);
       setSuccess(true);
     } catch (err) {
       setError(err.message);
@@ -92,6 +83,7 @@ const GetStarted=()=> {
       setLoading(false);
     }
   };
+
   const steps = [
     { number: 1, name: "Basic Information" },
     { number: 2, name: "Farm Details" },

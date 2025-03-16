@@ -1,41 +1,73 @@
 // src/utils/apiService.js
+const API_URL = import.meta.env.VITE_API_URL || '/api';
 
-export const warmupServices = async () => {
+// Base fetch function with common options
+const apiFetch = async (endpoint, options = {}) => {
+  // Default options
+  const defaultOptions = {
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    credentials: 'include',
+  };
+
+  // Merge options
+  const fetchOptions = {
+    ...defaultOptions,
+    ...options,
+    headers: {
+      ...defaultOptions.headers,
+      ...options.headers,
+    },
+  };
+
   try {
-    const response = await fetch(`https://agri-help-backend.onrender.com/warmup`, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    });
+    // Use relative path in development and absolute in production
+    const url = endpoint.startsWith('/') 
+      ? `${API_URL}${endpoint}` 
+      : `${API_URL}/${endpoint}`;
+      
+    const response = await fetch(url, fetchOptions);
     
     if (!response.ok) {
-      throw new Error(`API error: ${response.status}`);
+      const errorData = await response.json().catch(() => ({}));
+      throw new Error(errorData.error || errorData.message || `Request failed with status ${response.status}`);
     }
-    
-    const data = await response.json();
-    console.log('Services warmed up successfully:', data);
-    return data;
-  } catch (error) {
-    console.error('Failed to warm up services:', error);
-    return { success: false, error: error.message };
-  }
-};
-
-// Add other API services here
-export const submitContactForm = async (formData) => {
-  try {
-    const response = await fetch(`https://agri-help-backend.onrender.com/api/submit-contact-form`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(formData),
-    });
     
     return await response.json();
   } catch (error) {
-    console.error('Error submitting form:', error);
+    console.error(`API error (${endpoint}):`, error);
     throw error;
   }
 };
+
+// API endpoints
+export const api = {
+  warmupServices: () => apiFetch('/warmup', { method: 'GET' }),
+  
+  submitContactForm: (formData) => apiFetch('/submit-contact-form', {
+    method: 'POST',
+    body: JSON.stringify(formData),
+  }),
+  
+  getFarmerProfile: () => apiFetch('/get-farmer-profile', { method: 'GET' }),
+  
+  logout: () => apiFetch('/auth/logout', { method: 'POST' }),
+  
+  sendOTP: (data) => apiFetch('/handle-otp', {
+    method: 'POST',
+    body: JSON.stringify({ type: 'send', ...data }),
+  }),
+  
+  verifyOTP: (data) => apiFetch('/handle-otp', {
+    method: 'POST',
+    body: JSON.stringify({ type: 'verify', ...data }),
+  }),
+  
+  createFarmerProfile: (profileData) => apiFetch('/create-farmer-profile', {
+    method: 'POST',
+    body: JSON.stringify(profileData),
+  }),
+};
+
+export default api;
