@@ -4,6 +4,7 @@ import { useCallback } from "react";
 import { useState } from "react";
 import VideoModal from "../components/VideoModal";
 import { api } from '../utils/apiService';
+import { Link } from "react-router-dom";
 
 const Home = () => {
   const [isVideoModalOpen, setIsVideoModalOpen] = useState(false);
@@ -191,12 +192,12 @@ const Home = () => {
             Revolutionizing Agriculture with Advanced AI Solutions
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <a
-              href="/get-started"
+            <Link
+              to="/get-started"
               className="bg-[#4a8b3f] hover:bg-[#3a6d31] text-white font-bold py-4 px-10 rounded-lg transition duration-300 text-lg shadow-lg hover:shadow-xl transform hover:-translate-y-1"
             >
               Get Started
-            </a>
+            </Link>
             <button
               onClick={() => setIsVideoModalOpen(true)}
               className="bg-white/10 hover:bg-white/20 text-white font-bold py-4 px-10 rounded-lg transition duration-300 text-lg border-2 border-white/30 backdrop-blur-sm"
