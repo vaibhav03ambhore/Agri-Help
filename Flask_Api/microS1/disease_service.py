@@ -2,6 +2,7 @@
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 import tensorflow as tf
+from tensorflow.keras.utils import img_to_array
 import numpy as np
 from PIL import Image
 import io
@@ -98,9 +99,9 @@ class DiseaseClassifier:
             img = Image.open(io.BytesIO(image_bytes)).convert('RGB')
             img = img.resize(self.img_size)
             
-            # Convert to array and preprocess
-            img_array = np.array(img, dtype=np.float32)
-            img_array = img_array / 255.0  # Simple normalization
+            # Convert to array and preprocess with ResNet50 preprocessing
+            img_array = img_to_array(img)
+            img_array = tf.keras.applications.resnet50.preprocess_input(img_array)
             
             return np.expand_dims(img_array, axis=0)
         except Exception as e:
