@@ -48,9 +48,14 @@ const RecommendFertilizer=({ onSubmit, initialData }) =>{
 
       const data = await response.json();
 
+
+      const fertilizerData = {
+        ...formData,
+        recommendation: data.recommendation
+      }
+      await api.storeFertilizerResponse(fertilizerData);
+
       if (data.recommendation) {
-        formData.append("recommedation", data.recommendation);
-        await api.storeFertilizerResponse(formData);
         
         setPrediction(data.recommendation);
         if (onSubmit) {

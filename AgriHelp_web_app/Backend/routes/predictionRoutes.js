@@ -32,7 +32,7 @@ router.get('/get-crop-res', authenticate, getUserCropResults);
 router.get('/get-fertilizer-res', authenticate, getUserFertilizerResults);
 
 router.get('/get-all-users-results', authenticate, getAllResults);
-// router.get('/get-all-res-of-a-user', authenticate, getAllUserResults);
+router.get('/get-all-res-of-a-user', authenticate, getAllUserResults);
 
 
 export default router;
