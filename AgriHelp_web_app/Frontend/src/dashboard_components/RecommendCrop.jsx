@@ -1,4 +1,5 @@
 import { useState } from "react";
+import api from "../utils/apiService";
 
 const RecommendCrop=({ onSubmit, initialData }) =>{
   const [formData, setFormData] = useState({
@@ -42,6 +43,10 @@ const RecommendCrop=({ onSubmit, initialData }) =>{
       }
 
       const data = await response.json();
+
+      formData.append("recommedation", data.recommendation);
+      await api.storeCropResponse(formData);
+      
       if (data.recommendation) {
         setPrediction(data.recommendation);
         if (onSubmit) {

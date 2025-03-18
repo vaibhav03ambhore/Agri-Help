@@ -68,6 +68,26 @@ export const api = {
     method: 'POST',
     body: JSON.stringify(profileData),
   }),
+
+
+  storeDiseaseResponse: (formData)=>apiFetch("/store-disease", {
+    method: "POST",
+    body: formData,
+  }),
+  storePestResponse: (formData)=>apiFetch("/store-pest", {
+    method: "POST",
+    body: formData,
+  }),
+  storeFertilizerResponse: (profileData) => apiFetch('/store-fertilizer', {
+    method: 'POST',
+    body: JSON.stringify(profileData),
+  }),
+  storeCropResponse: (profileData) => apiFetch('/store-crop', {
+    method: 'POST',
+    body: JSON.stringify(profileData),
+  }),
+
+  getPredictionHistory: () => apiFetch('/get-all-res-of-a-user', { method: 'GET' }),
 };
 
 export default api;
