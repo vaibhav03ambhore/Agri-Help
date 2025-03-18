@@ -1,4 +1,5 @@
 import { useState} from "react";
+import api from "../utils/apiService";
 
 const RecommendFertilizer=({ onSubmit, initialData }) =>{
   const [formData, setFormData] = useState({
@@ -46,7 +47,11 @@ const RecommendFertilizer=({ onSubmit, initialData }) =>{
       }
 
       const data = await response.json();
+
       if (data.recommendation) {
+        formData.append("recommedation", data.recommendation);
+        await api.storeFertilizerResponse(formData);
+        
         setPrediction(data.recommendation);
         if (onSubmit) {
           onSubmit(data.recommendation);

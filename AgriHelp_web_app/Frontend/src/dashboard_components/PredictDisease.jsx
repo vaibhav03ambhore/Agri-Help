@@ -1,4 +1,6 @@
 import { useState } from "react";
+import api from "../utils/apiService";
+
 const PredictDisease= ({ onSubmit, initialData })=> {
   const [selectedImage, setSelectedImage] = useState(null);
   const [imagePreview, setImagePreview] = useState(null);
@@ -43,10 +45,18 @@ const PredictDisease= ({ onSubmit, initialData })=> {
       }
 
       const data = await response.json();
+      const confidence = (data.confidence * 100).toFixed(2);
       setPrediction({
         name: data.prediction,
-        confidence: (data.confidence * 100).toFixed(2),
+        confidence,
       });
+
+        // Append prediction data to formData
+      formData.append("prediction", data.prediction);
+      formData.append("confidence", confidence);
+
+      // Second API Call - Store Disease Data
+      await api.storeDiseaseResponse(formData);
 
       if (onSubmit) {
         onSubmit(data);
