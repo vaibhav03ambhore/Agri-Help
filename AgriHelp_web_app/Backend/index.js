@@ -5,6 +5,8 @@ import cookieParser from 'cookie-parser';
 import cors from 'cors';
 import userRoutes from './routes/userRoutes.js';
 import authRoutes from './routes/authRoutes.js';
+import predictionRoutes from './routes/predictionRoutes.js';
+
 import { warmupServices } from './utils/warmupServices.js';
 import { contactForm } from './utils/contactForm.js';
 
@@ -31,9 +33,14 @@ connectDB(MONGO_URI);
 // Routes
 app.use('/api', userRoutes);
 app.use('/api', authRoutes);
+app.use('/api',predictionRoutes);
+
 app.get('/api/warmup', warmupServices);
+
+
 warmupServices();
 app.post('/api/submit-contact-form',contactForm);
+
 app.get('/health', (req, res) => {
   res.status(200).json({ status: 'OK' });
 });
