@@ -44,8 +44,13 @@ const RecommendCrop=({ onSubmit, initialData }) =>{
 
       const data = await response.json();
 
-      formData.append("recommedation", data.recommendation);
-      await api.storeCropResponse(formData);
+      const cropData = {
+        ...formData,
+        recommendation: data.recommendation
+      };
+      
+      // Store the crop data with the recommendation
+      await api.storeCropResponse(cropData);
       
       if (data.recommendation) {
         setPrediction(data.recommendation);

@@ -7,6 +7,7 @@ export default defineConfig({
     proxy: {
       '/api': {
         target: 'https://agri-help-backend.onrender.com',
+        // target: 'http://localhost:5000',
         changeOrigin: true,
         secure: false,
       },

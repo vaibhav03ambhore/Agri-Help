@@ -23,15 +23,17 @@ const PredictDisease= ({ onSubmit, initialData })=> {
       setError("Please select an image first");
       return;
     }
-
+  
     setLoading(true);
     setError(null);
     setPrediction(null);
-
+  
     const formData = new FormData();
     formData.append("image", selectedImage);
-
+  
     try {
+      console.log("First API call to:", 'https://agri-help-wl8j.onrender.com/predict');
+      
       const response = await fetch(
         'https://agri-help-wl8j.onrender.com/predict',
         {
@@ -39,30 +41,53 @@ const PredictDisease= ({ onSubmit, initialData })=> {
           body: formData,
         }
       );
-
+  
       if (!response.ok) {
         throw new Error("Failed to get disease prediction");
       }
-
+  
       const data = await response.json();
       const confidence = (data.confidence * 100).toFixed(2);
       setPrediction({
         name: data.prediction,
         confidence,
       });
+  
+      // Create a NEW FormData object for the second API call
+      const storeFormData = new FormData();
+      storeFormData.append("image", selectedImage);
+      storeFormData.append("prediction", data.prediction);
+      storeFormData.append("confidence", confidence);
+  
+      // Log what we're sending in the second call
+      console.log("Second API call FormData contents:");
+      for (let [key, value] of storeFormData.entries()) {
+        console.log(key, typeof value, value);
+      }
+      
+      const predictionHistory=api.getPredictionHistory();
+      console.log("prediction Historoy: ",predictionHistory);
 
-        // Append prediction data to formData
-      formData.append("prediction", data.prediction);
-      formData.append("confidence", confidence);
-
-      // Second API Call - Store Disease Data
-      await api.storeDiseaseResponse(formData);
-
+      try {
+        const storeResponse=await api.storeDiseaseResponse(storeFormData);
+      
+        if (!storeResponse.ok) {
+          const errorText = await storeResponse.text();
+          console.error("Store API error:", errorText);
+          console.error(`Store API failed with status: ${storeResponse.status}`);
+        } else {
+          const storeData = await storeResponse.json();
+          console.log("Store response successful:", storeData);
+        }
+      } catch (storeError) {
+        console.error("Store API error details:", storeError);
+      }
+  
       if (onSubmit) {
         onSubmit(data);
       }
     } catch (err) {
-      console.error(err);
+      console.error("Main error:", err);
       setError(err.message);
     } finally {
       setLoading(false);
