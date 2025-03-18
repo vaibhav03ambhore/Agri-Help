@@ -1,10 +1,11 @@
 import nodemailer from 'nodemailer';
+import ContactForm from '../db_models/ContactForm.js';
 
 export const contactForm = async (req, res) => {
   const { name, email, message } = req.body;
 
   // Basic validation
-  if (!name || !email || !message) {
+  if (!name || !email || !message ) {
     return res.status(400).json({ error: 'Please provide name, email, and message' });
   }
 
@@ -36,13 +37,24 @@ export const contactForm = async (req, res) => {
     // Send email
     await transporter.sendMail(mailOptions);
 
+    const newContactForm = new ContactForm({
+      name,
+      email,
+      message
+    });
+    await newContactForm.save();
+
     // Log the submission
     console.log('Contact Form Submitted:', { name, email, message });
     
-    // Send success response
-    res.status(200).json({ message: 'Form submitted successfully' });
+    res.status(200).json({ 
+      message: 'Form submitted and saved successfully',
+      formId: newContactForm._id 
+    });
   } catch (error) {
     console.error('Error sending email:', error);
     res.status(500).json({ error: 'Failed to send message. Please try again later.' });
   }  
 };
+
+
