@@ -6,9 +6,12 @@ import PredictDisease from "../dashboard_components/PredictDisease";
 import FarmOperationsAndStrategy from "../dashboard_components/FarmOperationsAndStrategy";
 import FarmerInfo from "../dashboard_components/FarmerInfo";
 import FarmInfo from "../dashboard_components/FarmInfo";
+import PredictionHistory from "../dashboard_components/PredictionHistory";
+
 import { api } from '../utils/apiService';
 import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
+
 
 const Dashboard = () => {
   const [stats, setStats] = useState(null);
@@ -232,6 +235,19 @@ const Dashboard = () => {
               <i className="fas fa-disease"></i>
               <span>Predict Plant Disease</span>
             </button>
+
+            <button
+              onClick={() => handleMenuClick("prediction-history")}
+              className={`flex items-center space-x-2 p-3 rounded-lg cursor-pointer w-full ${
+                selectedMenuItem === "prediction-history"
+                  ? "bg-green-700 text-white"
+                  : "text-gray-700 hover:text-green-700"
+              }`}
+            >
+              <i className="fas fa-history"></i>
+              <span>Prediction History</span>
+            </button>
+
             <button 
               onClick={handleLogout}
               disabled={loggingOut}
@@ -332,6 +348,19 @@ const Dashboard = () => {
                 <i className="fas fa-disease"></i>
                 {sidebarOpen && <span>Predict Plant Disease</span>}
               </button>
+
+              <button
+                onClick={() => setSelectedMenuItem("prediction-history")}
+                className={`flex items-center space-x-2 p-3 rounded-lg cursor-pointer w-full ${
+                  selectedMenuItem === "prediction-history"
+                    ? "bg-green-700 text-white"
+                    : "text-gray-700 hover:text-green-700"
+                }`}
+              >
+                <i className="fas fa-history"></i>
+                {sidebarOpen && <span>Prediction History</span>}
+              </button>
+
               <div className="flex-1"></div>
               <button 
                 onClick={handleLogout}
@@ -422,6 +451,8 @@ const Dashboard = () => {
             <PredictPest />
           ) : selectedMenuItem === "predict-disease" ? (
             <PredictDisease />
+          ) : selectedMenuItem === "prediction-history" ? (
+            <PredictionHistory userId={stats?.profile?.userId} />
           ) : null}
         </main>
       </div>

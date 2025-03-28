@@ -11,9 +11,11 @@ const RecommendCrop=({ onSubmit, initialData }) =>{
     Phosphorus: initialData?.Phosphorus || "",
     Potassium: initialData?.Potassium || "",
   });
+  
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [prediction, setPrediction] = useState(null);
+  const [confidence,setConfidence]=useState(null);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -46,14 +48,17 @@ const RecommendCrop=({ onSubmit, initialData }) =>{
 
       const cropData = {
         ...formData,
-        recommendation: data.recommendation
+        recommendation: data.recommendation,
+        Confidence: data.result.confidence
       };
       
       // Store the crop data with the recommendation
+      console.log('sending crop data: '+cropData);
       await api.storeCropResponse(cropData);
       
       if (data.recommendation) {
         setPrediction(data.recommendation);
+        setConfidence(data.result.confidence);
         if (onSubmit) {
           onSubmit(data.recommendation);
         }
@@ -266,6 +271,9 @@ const RecommendCrop=({ onSubmit, initialData }) =>{
               Recommended Crop
             </h3>
             <p className="text-3xl font-bold text-green-700">{prediction}</p>
+            <p className="text-3xl font-bold text-[#4a8b3f] mb-2">
+            Confidence: {confidence}% 
+            </p>
           </div>
         )}
       </div>

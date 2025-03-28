@@ -62,14 +62,15 @@ const CropRecommendationSchema = new mongoose.Schema({
     type: String,
     required: true
   },
-  soilParameters: {
+  otherParameters: {
     temperature: Number,
     pH: Number,
     rainfall: Number,
     soilColor: String,
     nitrogen: Number,
     phosphorus: Number,
-    potassium: Number
+    potassium: Number,
+    confidence: Number
   }
 });
 
@@ -79,7 +80,7 @@ const FertilizerRecommendationSchema = new mongoose.Schema({
       type: String,
       required: true
     },
-    soilParameters: {
+    otherParameters: {
       temperature: Number,
       pH: Number,
       rainfall: Number,
@@ -87,7 +88,8 @@ const FertilizerRecommendationSchema = new mongoose.Schema({
       cropType:String,
       nitrogen: Number,
       phosphorus: Number,
-      potassium: Number
+      potassium: Number,
+      confidence: Number
     }
   });
 
