@@ -63,13 +63,20 @@ class CropRecommender:
             
             # Make prediction
             prediction = self.model.predict(features)
+            print(prediction)
             crop_code = prediction[0]
+
+            # Get prediction confidence (if model supports predict_proba)
+            if hasattr(self.model, "predict_proba"):
+                probabilities = self.model.predict_proba(features)  # Get probability distribution
+                confidence = max(probabilities[0])  # Confidence of the predicted class
+            else:
+                confidence = None  # Confidence score is not available
             
-            # Map to crop name
             if crop_code not in self.crop_mapping:
-                return {"crop": None, "error": "Unknown crop predicted"}
+                return {"crop": None, "error": "Unknown crop predicted", "confidence": None}
             
-            return {"crop": self.crop_mapping[crop_code], "error": None}
+            return {"crop": self.crop_mapping[crop_code], "error": None,"confidence":confidence}
             
         except Exception as e:
             return {"crop": None, "error": str(e)}
@@ -105,6 +112,7 @@ def predict_crop():
         return jsonify({"error": result['error']}), 400
         
     response = {
+        "result": result,
         "recommendation": result['crop'],
         "processing_time_seconds": processing_time
     }
