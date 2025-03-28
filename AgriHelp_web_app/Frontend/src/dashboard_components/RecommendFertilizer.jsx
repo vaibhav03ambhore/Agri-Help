@@ -15,7 +15,8 @@ const RecommendFertilizer=({ onSubmit, initialData }) =>{
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [prediction, setPrediction] = useState(null);
-
+  const [confidence,setConfidence]= useState(null);
+  
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({
@@ -51,12 +52,13 @@ const RecommendFertilizer=({ onSubmit, initialData }) =>{
 
       const fertilizerData = {
         ...formData,
-        recommendation: data.recommendation
+        recommendation: data.recommendation,
+        Confidence: data.confidence
       }
       await api.storeFertilizerResponse(fertilizerData);
 
       if (data.recommendation) {
-        
+        setConfidence(data.confidence);
         setPrediction(data.recommendation);
         if (onSubmit) {
           onSubmit(data.recommendation);
@@ -305,6 +307,9 @@ const RecommendFertilizer=({ onSubmit, initialData }) =>{
               Recommended Fertilizer
             </h3>
             <p className="text-3xl font-bold text-green-700">{prediction}</p>
+            <p className="text-3xl font-bold text-[#4a8b3f] mb-2">
+            Confidence: {confidence}% 
+            </p>
           </div>
         )}
       </div>

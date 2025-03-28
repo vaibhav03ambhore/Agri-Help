@@ -52,15 +52,25 @@ const apiFetch = async (endpoint, options = {}) => {
     if (!response.ok) {
       try {
         const errorText = await response.text();
-        console.error(`API error response (${response.status}):`, errorText);
+        console.error(`API error response in apiService file (${response.status}):`, errorText);
         try {
           const errorData = JSON.parse(errorText);
-          throw new Error(errorData.error || errorData.message || `Request failed with status ${response.status}`);
+          console.log(`Parsed error response in apiServie file:`, errorData.error);
+          throw new Error(errorData.error || errorData.message || `Request failedd with status ${response.status}`);
         } catch (jsonError) {
           throw new Error(`Request failed with status ${response.status}: ${errorText}`);
         }
       } catch (textError) {
-        throw new Error(`Request failed with status ${response.status}`);
+        try {
+            throw new Error(`${textError.message}`);
+        } catch (error) {
+            const match = error.message.match(/"error":"(.*?)"/);
+            if (match) {
+                throw new Error(match[1]); // Throws only "User not found"
+            } else {
+                throw error; // If no match, throw the original error
+            }
+        }
       }
     }
     
@@ -123,6 +133,11 @@ export const api = {
   }),
 
   getPredictionHistory: () => apiFetch('/get-all-res-of-a-user', { method: 'GET' }),
+
+  getUserDiseaseResults: () => apiFetch('/get-disease-res', { method: 'GET' }),
+  getUserPestResults: () => apiFetch('/get-pest-res', { method: 'GET' }),
+  getUserCropResults: () => apiFetch('/get-crop-res', { method: 'GET' }),
+  getUserFertilizerResults: () => apiFetch('/get-fertilizer-res', { method: 'GET' }),
 };
 
 export default api;

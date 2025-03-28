@@ -65,8 +65,8 @@ const PredictDisease= ({ onSubmit, initialData })=> {
         console.log(key, typeof value, value);
       }
       
-      const predictionHistory=api.getPredictionHistory();
-      console.log("prediction Historoy: ",predictionHistory);
+      // const predictionHistory=api.getPredictionHistory();
+      // console.log("prediction Historoy: ",predictionHistory);
 
       try {
         const storeResponse=await api.storeDiseaseResponse(storeFormData);

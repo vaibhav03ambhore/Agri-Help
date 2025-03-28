@@ -79,14 +79,29 @@ export const storePestResult = async (req, res) => {
 // Crop Recommendation Controller (No changes)
 export const storeCropResult = async (req, res) => {
   try {
-    const { recommendation, ...soilParams } = req.body;
+    const { recommendation, ...otherParameters } = req.body; 
+
+    console.log('Received other parameters:', otherParameters);  // FIXED: Corrected variable name
+    console.log('Received recommendation:', recommendation);
+    
     const userId = req.user.id;
+
+    const formattedParameters = {
+      temperature: otherParameters.Temperature,
+      pH: otherParameters.pH,
+      rainfall: otherParameters.Rainfall,
+      soilColor: otherParameters.Soil_color,  // Fix case
+      nitrogen: otherParameters.Nitrogen,
+      phosphorus: otherParameters.Phosphorus,
+      potassium: otherParameters.Potassium,
+      confidence: otherParameters.Confidence
+    };
     
     const newRecommendation = new CropRecommendation({
       user: userId,
       recommendation,
-      soilParameters: soilParams
-    });
+      otherParameters: formattedParameters
+    });    
     
     await newRecommendation.save();
     res.status(201).json(newRecommendation);
@@ -98,17 +113,33 @@ export const storeCropResult = async (req, res) => {
 
 export const storeFertilizerResult = async (req, res) => {
     try {
-      const { recommendation, ...soilParams } = req.body;
-      const userId = req.user.id;
+      const { recommendation, ...otherParameters } = req.body; 
 
-      const newRecommendation = new FertilizerRecommendation({
-        user: userId,
-        recommendation,
-        soilParameters: soilParams
-      });
-
-      await newRecommendation.save();
-      res.status(201).json(newRecommendation);
+    console.log('Received other parameters:', otherParameters);  // FIXED: Corrected variable name
+    console.log('Received recommendation:', recommendation);
+    
+    const userId = req.user.id;
+    
+    const formattedParameters = {
+      temperature: otherParameters.Temperature,
+      cropType:otherParameters.Crop,
+      pH: otherParameters.pH,
+      rainfall: otherParameters.Rainfall,
+      soilColor: otherParameters.Soil_color,  // Fix case
+      nitrogen: otherParameters.Nitrogen,
+      phosphorus: otherParameters.Phosphorus,
+      potassium: otherParameters.Potassium,
+      confidence: otherParameters.Confidence
+    };
+    
+    const newRecommendation = new FertilizerRecommendation({
+      user: userId,
+      recommendation,
+      otherParameters: formattedParameters
+    });    
+    
+    await newRecommendation.save();
+    res.status(201).json(newRecommendation);
     } catch (error) {
       console.error('Error storing fertilizer recommendation:', error);
       res.status(500).json({ error: 'Server error' });

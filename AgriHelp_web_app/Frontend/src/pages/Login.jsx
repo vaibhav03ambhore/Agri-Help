@@ -63,9 +63,11 @@ const Login = () => {
       if (data && data.success) {
         setStep("otp");
       } else {
+        console.log("errrrr: "+data);
         throw new Error(data?.error || "Failed to send OTP");
       }
     } catch (err) {
+      console.log("err: "+err.message);
       setError(err.message);
     } finally {
       setLoading(false);
