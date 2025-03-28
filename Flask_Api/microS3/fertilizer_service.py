@@ -49,10 +49,17 @@ class FertilizerRecommender:
             
             # Make prediction
             prediction = self.model.predict(sample_prepared)
-            return {"fertilizer": prediction[0], "error": None}
+
+            if hasattr(self.model, "predict_proba"):
+                probabilities = self.model.predict_proba(sample_prepared)  # Correct input
+                confidence = max(probabilities[0])  # Highest confidence score
+            else:
+                confidence = None
+
+            return {"fertilizer": prediction[0], "error": None, "confidence": confidence}
         except Exception as e:
             print("Prediction error:", e)
-            return {"fertilizer": None, "error": str(e)}
+            return {"fertilizer": None, "error": str(e), "confidence": None}
 
 # Create recommender instance
 fertilizer_recommender = FertilizerRecommender()
@@ -86,6 +93,7 @@ def predict_fertilizer():
             
         response = {
             "recommendation": result['fertilizer'],
+            "confidence": result.get('confidence', None),
             "processing_time_seconds": processing_time
         }
         return jsonify(response)
