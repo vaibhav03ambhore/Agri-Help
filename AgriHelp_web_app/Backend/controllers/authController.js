@@ -50,13 +50,13 @@ export const handleOTP = async (req, res) => {
           await sendEmailOTP(email, newOTP);
         } 
         
-        // if (mobile) {
-        //   const fmobile = `+91${mobile}`;
-        //   await sendSMS(
-        //     fmobile,
-        //     `Your AgriHelp OTP: ${newOTP} (valid for 5 minutes)`
-        //   );
-        // }
+        if (mobile) {
+          const fmobile = `+91${mobile}`;
+          await sendSMS(
+            fmobile,
+            `Your AgriHelp OTP: ${newOTP} (valid for 5 minutes)`
+          );
+        }
     
       } catch (error) {
         console.error("OTP Delivery Error:", error);
