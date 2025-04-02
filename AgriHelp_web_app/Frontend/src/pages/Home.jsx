@@ -36,14 +36,23 @@ const Home = () => {
 
   const [isHovered, setIsHovered] = useState(false);
   const [isLogeddIn,setLogeddIn]=useState(false);
+  const [loading,setLoading]=useState(true);
 
   useEffect(()=>{
     const getProfile=async()=>{
-      const data=await api.getFarmerProfile();
-      if (data.success) {
-          setLogeddIn(true);
-        return;
-      }else setLogeddIn(false)
+      try{
+        setLoading(true);
+        const data=await api.getFarmerProfile();
+        if (data.success) {
+            setLogeddIn(true);
+          return;
+        }else setLogeddIn(false)
+      }catch(err){
+        console.error(err);
+      }finally{
+        setLoading(false);
+      }
+      
     }
     getProfile();
   },[])
@@ -181,6 +190,17 @@ const Home = () => {
     setNewsletterEmail("");
     setTimeout(() => setNewsletterSuccess(false), 3000);
   };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#4a8b3f] mx-auto mb-4"></div>
+          <p className="text-gray-600">Loading your dashboard...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen flex flex-col bg-[#f8f9fa]">
