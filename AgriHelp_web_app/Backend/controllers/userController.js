@@ -13,7 +13,7 @@ export const createFarmerProfile = async (req, res) => {
       } = req.body;
 
     // Validate required fields
-    if (!basicInfo?.email || !basicInfo?.contactNumber) {
+    if (!basicInfo?.email && !basicInfo?.contactNumber) {
       return res.status(400).json({ error: "Missing required fields" });
     }
 
