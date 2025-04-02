@@ -35,9 +35,18 @@ const Home = () => {
   }, []);
 
   const [isHovered, setIsHovered] = useState(false);
+  const [isLogeddIn,setLogeddIn]=useState(false);
 
-  
-  
+  useEffect(()=>{
+    const getProfile=async()=>{
+      const data=await api.getFarmerProfile();
+      if (data.success) {
+          setLogeddIn(true);
+        return;
+      }else setLogeddIn(false)
+    }
+    getProfile();
+  },[])
 
   useEffect(() => {
     const slider = sliderRef.current;
@@ -193,10 +202,10 @@ const Home = () => {
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link
-              to="/get-started"
+              to={(isLogeddIn)?`/dashboard`:`/get-started`}
               className="bg-[#4a8b3f] hover:bg-[#3a6d31] text-white font-bold py-4 px-10 rounded-lg transition duration-300 text-lg shadow-lg hover:shadow-xl transform hover:-translate-y-1"
             >
-              Get Started
+             {(isLogeddIn)?`Go to Dashboard`:`Get Started`}
             </Link>
             <button
               onClick={() => setIsVideoModalOpen(true)}
