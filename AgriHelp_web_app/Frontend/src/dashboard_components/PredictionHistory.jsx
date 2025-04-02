@@ -1,120 +1,6 @@
 import { useState, useEffect } from "react";
 import api from "../utils/apiService";
 
-const SAMPLE_PREDICTIONS ={
-  crops: [
-      {
-          id: "67e6a1dbafd9080292439d99",
-          user: "67e6917f46ca67ff43be8ddc",
-          recommendation: "Rice",
-          otherParameters: {
-              temperature: 28,
-              pH: 6.8,
-              rainfall: 120,
-              soilColor: "Red",
-              nitrogen: 90,
-              phosphorus: 55,
-              potassium: 45,
-              confidence: 0.72
-          },
-          createdAt: "2025-03-28T14:00:00.123Z"
-      },
-      {
-          id: "67e6a1deafd9080292439da1",
-          user: "67e6917f46ca67ff43be8ddc",
-          recommendation: "Corn",
-          otherParameters: {
-              temperature: 26,
-              pH: 6.4,
-              rainfall: 90,
-              soilColor: "Loamy",
-              nitrogen: 85,
-              phosphorus: 60,
-              potassium: 50,
-              confidence: 0.68
-          },
-          createdAt: "2025-03-28T14:05:30.456Z"
-      }
-  ],
-  fertilizers: [
-      {
-          id: "67e6a2eeafd9080292439db5",
-          user: "67e6917f46ca67ff43be8ddc",
-          recommendation: "DAP",
-          otherParameters: {
-              temperature: 27,
-              pH: 6.7,
-              rainfall: 110,
-              soilColor: "Black",
-              cropType: "Rice",
-              nitrogen: 95,
-              phosphorus: 58,
-              potassium: 48,
-              confidence: 0.60
-          },
-          createdAt: "2025-03-28T14:10:12.789Z"
-      },
-      {
-          id: "67e6a2f1afd9080292439dc0",
-          user: "67e6917f46ca67ff43be8ddc",
-          recommendation: "NPK 20-20-20",
-          otherParameters: {
-              temperature: 24,
-              pH: 6.5,
-              rainfall: 85,
-              soilColor: "Loamy",
-              cropType: "Corn",
-              nitrogen: 88,
-              phosphorus: 62,
-              potassium: 55,
-              confidence: 0.65
-          },
-          createdAt: "2025-03-28T14:15:40.234Z"
-      }
-  ],
-  pests: [
-      {
-          id: "67e6a3a5afd9080292439ddd",
-          user: "67e6917f46ca67ff43be8ddc",
-          prediction: "Aphid",
-          confidence: 97.45,
-          imageUrl: "https://res.cloudinary.com/dvoj8b5jm/image/upload/v1743165414/agri-help-predictions/aphid_sample.jpg",
-          originalImageName: "aphid.jpg",
-          createdAt: "2025-03-28T14:20:55.678Z"
-      },
-      {
-          id: "67e6a3a8afd9080292439de5",
-          user: "67e6917f46ca67ff43be8ddc",
-          prediction: "Armyworm",
-          confidence: 92.30,
-          imageUrl: "https://res.cloudinary.com/dvoj8b5jm/image/upload/v1743165414/agri-help-predictions/armyworm_sample.jpg",
-          originalImageName: "armyworm.jpg",
-          createdAt: "2025-03-28T14:25:10.891Z"
-      }
-  ],
-  diseases: [
-      {
-          id: "67e6a3b0afd9080292439dfa",
-          user: "67e6917f46ca67ff43be8ddc",
-          prediction: "Rice___Leaf_Blast",
-          confidence: 75.21,
-          imageUrl: "https://res.cloudinary.com/dvoj8b5jm/image/upload/v1743165424/agri-help-predictions/rice_leaf_blast.jpg",
-          originalImageName: "rice_leaf_blast.jpg",
-          createdAt: "2025-03-28T14:30:30.123Z"
-      },
-      {
-          id: "67e6a3b3afd9080292439e03",
-          user: "67e6917f46ca67ff43be8ddc",
-          prediction: "Corn___Rust",
-          confidence: 80.55,
-          imageUrl: "https://res.cloudinary.com/dvoj8b5jm/image/upload/v1743165424/agri-help-predictions/corn_rust.jpg",
-          originalImageName: "corn_rust.jpg",
-          createdAt: "2025-03-28T14:35:45.456Z"
-      }
-  ]
-};
-
-
 const PredictionHistory=({ userId })=> {
   
   const [predictions, setPredictions] = useState({
@@ -514,8 +400,11 @@ const PredictionHistory=({ userId })=> {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center p-2 sm:p-4 md:p-6">
-        <div className="animate-spin rounded-full h-6 w-6 sm:h-8 sm:w-8 border-b-2 border-green-700"></div>
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#e4e6e4] mx-auto mb-4"></div>
+          <p className="text-white">Loading...</p>
+        </div>
       </div>
     );
   }

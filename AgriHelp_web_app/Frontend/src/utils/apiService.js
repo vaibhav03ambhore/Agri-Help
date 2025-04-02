@@ -104,6 +104,16 @@ export const api = {
     body: JSON.stringify({ type: 'verify', ...data }),
   }),
   
+  getStartedSendOTP:(data) => apiFetch("/get-started", {
+      method: "POST",
+      body: JSON.stringify({ type: "send", ...data }),
+    }),
+  
+  getStartedVerifyOTP:(data) => apiFetch("/get-started", {
+      method: "POST",
+      body: JSON.stringify({ type: "verify", ...data }),
+    }),
+  
   createFarmerProfile: (profileData) => apiFetch('/create-farmer-profile', {
     method: 'POST',
     body: JSON.stringify(profileData),
