@@ -3,8 +3,8 @@ import mongoose from "mongoose";
 const userSchema = new mongoose.Schema({
     basicInfo: {
       fullName: { type: String, required: true },
-      email: { type: String, required: true, unique: true },
-      contactNumber: { type: String, required: true },
+      email: { type: String, unique: true },
+      contactNumber: { type: String  },
       location: { type: String, required: true }
     },
     farmDetails: {
