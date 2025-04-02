@@ -69,18 +69,12 @@ const PredictDisease= ({ onSubmit, initialData })=> {
       // console.log("prediction Historoy: ",predictionHistory);
 
       try {
+        setLoading(false);
         const storeResponse=await api.storeDiseaseResponse(storeFormData);
-      
-        if (!storeResponse.ok) {
-          const errorText = await storeResponse.text();
-          console.error("Store API error:", errorText);
-          console.error(`Store API failed with status: ${storeResponse.status}`);
-        } else {
-          const storeData = await storeResponse.json();
-          console.log("Store response successful:", storeData);
-        }
-      } catch (storeError) {
-        console.error("Store API error details:", storeError);
+        console.log(storeResponse)
+        
+      } catch (err) {
+        console.error("Store API error details:", err);
       }
   
       if (onSubmit) {

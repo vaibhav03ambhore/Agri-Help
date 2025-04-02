@@ -48,7 +48,7 @@ const apiFetch = async (endpoint, options = {}) => {
     }
     
     const response = await fetch(url, fetchOptions);
-    
+    console.log(response)
     if (!response.ok) {
       try {
         const errorText = await response.text();
