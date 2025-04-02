@@ -58,7 +58,7 @@ export const storeDiseaseResult = async (req, res) => {
 export const storePestResult = async (req, res) => {
   try {
     const { prediction, confidence } = req.body;
-    const userId = req.user.id;
+    const userId = req?.user?.id;
 
     const newPrediction = new PestPrediction({
       user: userId,
@@ -72,6 +72,7 @@ export const storePestResult = async (req, res) => {
     res.status(201).json(newPrediction);
   } catch (error) {
     console.error('Error storing pest prediction:', error);
+    console.log('ERROR: in prediction-controller.js')
     res.status(500).json({ error: 'Server error' });
   }
 };

@@ -113,7 +113,7 @@ const Dashboard = () => {
       }
     };
     
-    initializeServices();
+    // initializeServices();
     loadDashboard();
   }, []);
   

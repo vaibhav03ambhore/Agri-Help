@@ -53,6 +53,7 @@ const PredictPest=({ onSubmit, initialData })=> {
       formData.append("prediction", data.prediction);
       formData.append("confidence", confidence);
 
+      setLoading(false);
       // Second API Call - Store Disease Data
       await api.storePestResponse(formData);
       if (onSubmit) {

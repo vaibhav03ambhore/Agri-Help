@@ -68,7 +68,7 @@ const PredictionHistory=({ userId })=> {
     });
   };
 
-  const renderSimpleCard = (pred, type) => {
+  const renderSimpleCard = (pred, type,key) => {
     
     const getMainInfo = () => {
       switch (type) {
@@ -440,8 +440,8 @@ const PredictionHistory=({ userId })=> {
 
       <div className="space-y-2 sm:space-y-4">
         {predictions[activeTab].length > 0 ? (
-          getSortedPredictions(predictions[activeTab]).map((pred) =>
-            renderSimpleCard(pred, activeTab)
+          getSortedPredictions(predictions[activeTab]).map((pred,index) =>
+            renderSimpleCard(pred, activeTab,pred.id||index)
           )
         ) : (
           <div className="text-center py-4 text-xs sm:text-sm text-gray-500">
