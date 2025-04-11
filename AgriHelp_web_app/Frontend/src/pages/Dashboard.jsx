@@ -437,14 +437,14 @@ const Dashboard = () => {
             <RecommendFertilizer 
               onSubmit={handleFertilizerSubmit} 
               initialData={{
-                "Nitrogen": 80,
-                "Phosphorus": 50,
+                "Nitrogen": 35,
+                "Phosphorus": 25,
                 "Potassium": 40,
                 "pH": 6.5,
-                "Rainfall": 100,
-                "Temperature": 25,
+                "Rainfall": 600,
+                "Temperature": 30,
                 "Soil_color": "Black",
-                "Crop": "Wheat"
+                "Crop": "Jowar"
               }}
             />
           ) : selectedMenuItem === "predict-pest" ? (
