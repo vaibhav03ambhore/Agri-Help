@@ -308,7 +308,7 @@ const RecommendFertilizer=({ onSubmit, initialData }) =>{
             </h3>
             <p className="text-3xl font-bold text-green-700">{prediction}</p>
             <p className="text-3xl font-bold text-[#4a8b3f] mb-2">
-            Confidence: {confidence}% 
+            Confidence: {confidence*100}% 
             </p>
           </div>
         )}

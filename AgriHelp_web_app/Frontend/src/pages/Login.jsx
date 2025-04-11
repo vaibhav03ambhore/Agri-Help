@@ -112,7 +112,7 @@ const Login = () => {
       <div className="max-w-md mx-auto mt-10 px-4">
         <div className="bg-white rounded-2xl shadow-xl p-8">
           <div className="flex flex-col gap-6">
-            <button
+            {/* <button
               className="w-full flex items-center justify-center gap-3 px-4 py-3 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
               onClick={() => {}}
             >
@@ -123,7 +123,7 @@ const Login = () => {
               <div className="flex-grow border-t border-gray-300"></div>
               <span className="text-gray-500">or</span>
               <div className="flex-grow border-t border-gray-300"></div>
-            </div>
+            </div> */}
             <div className="flex gap-4 p-1 bg-gray-100 rounded-lg">
               <button
                 className={`flex-1 py-2 rounded-lg text-center transition-colors ${
