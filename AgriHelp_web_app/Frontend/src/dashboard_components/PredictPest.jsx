@@ -1,4 +1,5 @@
 import { useState } from "react";
+import api from "../utils/apiService";
 
 const PredictPest=({ onSubmit, initialData })=> {
   const [selectedImage, setSelectedImage] = useState(null);
@@ -31,22 +32,30 @@ const PredictPest=({ onSubmit, initialData })=> {
     formData.append("image", selectedImage);
 
     try {
-      const response = await fetch("http://127.0.0.1:4000/api/pest/predict", {
+      const response = await fetch('https://agri-help-pest.onrender.com/predict', {
         method: "POST",
         body: formData,
       });
 
-      console.log("this is the repo: "+response);
+      // console.log("this is the repo: "+response);
       if (!response.ok) {
         throw new Error("Failed to get pest prediction");
       }
 
       const data = await response.json();
+      const confidence= (data.confidence * 100).toFixed(2);
       setPrediction({
         name: data.prediction,
-        confidence: (data.confidence * 100).toFixed(2),
+        confidence,
       });
 
+      // Append prediction data to formData
+      formData.append("prediction", data.prediction);
+      formData.append("confidence", confidence);
+
+      setLoading(false);
+      // Second API Call - Store Disease Data
+      await api.storePestResponse(formData);
       if (onSubmit) {
         onSubmit(data);
       }

@@ -50,13 +50,13 @@ export const handleOTP = async (req, res) => {
           await sendEmailOTP(email, newOTP);
         } 
         
-        // if (mobile) {
-        //   const fmobile = `+91${mobile}`;
-        //   await sendSMS(
-        //     fmobile,
-        //     `Your AgriHelp OTP: ${newOTP} (valid for 5 minutes)`
-        //   );
-        // }
+        if (mobile) {
+          const fmobile = `+91${mobile}`;
+          await sendSMS(
+            fmobile,
+            `Your AgriHelp OTP: ${newOTP} (valid for 5 minutes)`
+          );
+        }
     
       } catch (error) {
         console.error("OTP Delivery Error:", error);
@@ -100,7 +100,7 @@ export const handleOTP = async (req, res) => {
         .cookie("access_token", token, {
           httpOnly: true,
           secure: process.env.NODE_ENV === "production",
-          sameSite: "strict",
+          sameSite: "None",
           maxAge: 7 * 24 * 60 * 60 * 1000 // 7 days
         })
         .json({
@@ -128,7 +128,7 @@ export const logout = (req, res) => {
   res.clearCookie("access_token", {
     httpOnly: true,
     secure: process.env.NODE_ENV === "production",
-    sameSite: "strict"
+    sameSite: "None",
   });
   return res.status(200).json({ success: true, message: "Logged out successfully" });
 };

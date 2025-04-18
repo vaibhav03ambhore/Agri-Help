@@ -6,6 +6,12 @@ import PredictDisease from "../dashboard_components/PredictDisease";
 import FarmOperationsAndStrategy from "../dashboard_components/FarmOperationsAndStrategy";
 import FarmerInfo from "../dashboard_components/FarmerInfo";
 import FarmInfo from "../dashboard_components/FarmInfo";
+import PredictionHistory from "../dashboard_components/PredictionHistory";
+
+import { api } from '../utils/apiService';
+import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+
 
 const Dashboard = () => {
   const [stats, setStats] = useState(null);
@@ -16,19 +22,16 @@ const Dashboard = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [loggingOut, setLoggingOut] = useState(false);
   
+  const navigate = useNavigate();
 
   const loadDashboard = async () => {
     try {
       setLoading(true);
       setError(null);
       
-      const response = await fetch("/api/get-farmer-profile", {
-        credentials: 'include'
-      });
-      // Parse the response first
-      const data = await response.json();
-      console.log("status of success:", data.success);
-      console.log("profile data:", data); // Use comma instead of + for better logging
+      const data = await api.getFarmerProfile();
+      // console.log("status of success:", data.success);
+      // console.log("profile data:", data); // Use comma instead of + for better logging
 
       if (!data.success || !data.data) {
         setError("Farmer profile not found");
@@ -37,7 +40,7 @@ const Dashboard = () => {
 
       // Now you can access the profile data using data.data
       const profileData = data.data;
-      console.log("profileData:", profileData);
+      // console.log("profileData:", profileData);
 
       const transformedData = {
         profile: {
@@ -52,7 +55,7 @@ const Dashboard = () => {
         cropSelections: profileData.cropSelections
       };
       
-      console.log("Transformed data:", transformedData);
+      // console.log("Transformed data:", transformedData);
 
       setStats(transformedData);
     } catch (err) {
@@ -64,36 +67,28 @@ const Dashboard = () => {
   };
 
   const handleLogo=()=>{
-    window.location.href = "/"
+    navigate('/');
   }
 
   // Logout functionality
   const handleLogout = async () => {
     try {
       setLoggingOut(true);
-      const response = await fetch("/api/auth/logout", {
-        method: "POST",
-        credentials: "include",
-        headers: {
-          "Content-Type": "application/json"
-        }
-      });
-      
-      const data = await response.json();
+      const data = await api.logout();
       
       if (data.success) {
         // Redirect to login page after successful logout
-        window.location.href = "/";
+        navigate("/");
       } else {
         console.error("Logout failed:", data.message);
         // Still redirect to login page even if logout fails on the server
         // This ensures the user can start a new session
-        window.location.href = "/";
+        navigate("/");
       }
     } catch (err) {
       console.error("Error during logout:", err);
       // Redirect anyway to let the user start fresh
-      window.location.href = "/";
+      navigate("/");
     } finally {
       setLoggingOut(false);
     }
@@ -107,7 +102,18 @@ const Dashboard = () => {
     }
   };
 
+
   useEffect(() => {
+    const initializeServices = async () => {
+      try {
+        await api.warmupServices();
+        console.log('Backend services initialized');
+      } catch (error) {
+        console.error('Failed to initialize backend services:', error);
+      }
+    };
+    
+    // initializeServices();
     loadDashboard();
   }, []);
   
@@ -138,17 +144,16 @@ const Dashboard = () => {
     return (
       <div className="min-h-screen bg-gray-50 flex flex-col items-center justify-center gap-4">
         <div className="text-red-600 text-xl">{error}</div>
-        <a
-          href="/get-started"
-          className="bg-green-700 hover:bg-green-800 text-white font-bold py-2 px-6 rounded-lg transition duration-300"
-        >
+        
+        <Link to="/get-started" className="bg-green-700 hover:bg-green-800 text-white font-bold py-2 px-6 rounded-lg transition duration-300">
           Create Profile
-        </a>
+        </Link>
+  
       </div>
     );
   }
  
-  console.log("stats:", stats);
+  // console.log("stats:", stats);
   return (
     <div className="min-h-screen bg-gray-50 flex">
       {/* Mobile Header */}
@@ -230,6 +235,19 @@ const Dashboard = () => {
               <i className="fas fa-disease"></i>
               <span>Predict Plant Disease</span>
             </button>
+
+            <button
+              onClick={() => handleMenuClick("prediction-history")}
+              className={`flex items-center space-x-2 p-3 rounded-lg cursor-pointer w-full ${
+                selectedMenuItem === "prediction-history"
+                  ? "bg-green-700 text-white"
+                  : "text-gray-700 hover:text-green-700"
+              }`}
+            >
+              <i className="fas fa-history"></i>
+              <span>Prediction History</span>
+            </button>
+
             <button 
               onClick={handleLogout}
               disabled={loggingOut}
@@ -330,6 +348,19 @@ const Dashboard = () => {
                 <i className="fas fa-disease"></i>
                 {sidebarOpen && <span>Predict Plant Disease</span>}
               </button>
+
+              <button
+                onClick={() => setSelectedMenuItem("prediction-history")}
+                className={`flex items-center space-x-2 p-3 rounded-lg cursor-pointer w-full ${
+                  selectedMenuItem === "prediction-history"
+                    ? "bg-green-700 text-white"
+                    : "text-gray-700 hover:text-green-700"
+                }`}
+              >
+                <i className="fas fa-history"></i>
+                {sidebarOpen && <span>Prediction History</span>}
+              </button>
+
               <div className="flex-1"></div>
               <button 
                 onClick={handleLogout}
@@ -406,20 +437,22 @@ const Dashboard = () => {
             <RecommendFertilizer 
               onSubmit={handleFertilizerSubmit} 
               initialData={{
-                "Nitrogen": 80,
-                "Phosphorus": 50,
+                "Nitrogen": 35,
+                "Phosphorus": 25,
                 "Potassium": 40,
                 "pH": 6.5,
-                "Rainfall": 100,
-                "Temperature": 25,
+                "Rainfall": 600,
+                "Temperature": 30,
                 "Soil_color": "Black",
-                "Crop": "Wheat"
+                "Crop": "Jowar"
               }}
             />
           ) : selectedMenuItem === "predict-pest" ? (
             <PredictPest />
           ) : selectedMenuItem === "predict-disease" ? (
             <PredictDisease />
+          ) : selectedMenuItem === "prediction-history" ? (
+            <PredictionHistory userId={stats?.profile?.userId} />
           ) : null}
         </main>
       </div>

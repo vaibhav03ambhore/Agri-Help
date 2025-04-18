@@ -1,4 +1,6 @@
 import { useState } from "react";
+import api from "../utils/apiService";
+
 const PredictDisease= ({ onSubmit, initialData })=> {
   const [selectedImage, setSelectedImage] = useState(null);
   const [imagePreview, setImagePreview] = useState(null);
@@ -21,38 +23,65 @@ const PredictDisease= ({ onSubmit, initialData })=> {
       setError("Please select an image first");
       return;
     }
-
+  
     setLoading(true);
     setError(null);
     setPrediction(null);
-
+  
     const formData = new FormData();
     formData.append("image", selectedImage);
-
+  
     try {
+      console.log("First API call to:", 'https://agri-help-wl8j.onrender.com/predict');
+      
       const response = await fetch(
-        "http://127.0.0.1:4000/api/disease/predict",
+        'https://agri-help-wl8j.onrender.com/predict',
         {
           method: "POST",
           body: formData,
         }
       );
-
+  
       if (!response.ok) {
         throw new Error("Failed to get disease prediction");
       }
-
+  
       const data = await response.json();
+      const confidence = (data.confidence * 100).toFixed(2);
       setPrediction({
         name: data.prediction,
-        confidence: (data.confidence * 100).toFixed(2),
+        confidence,
       });
+  
+      // Create a NEW FormData object for the second API call
+      const storeFormData = new FormData();
+      storeFormData.append("image", selectedImage);
+      storeFormData.append("prediction", data.prediction);
+      storeFormData.append("confidence", confidence);
+  
+      // Log what we're sending in the second call
+      console.log("Second API call FormData contents:");
+      for (let [key, value] of storeFormData.entries()) {
+        console.log(key, typeof value, value);
+      }
+      
+      // const predictionHistory=api.getPredictionHistory();
+      // console.log("prediction Historoy: ",predictionHistory);
 
+      try {
+        setLoading(false);
+        const storeResponse=await api.storeDiseaseResponse(storeFormData);
+        console.log(storeResponse)
+        
+      } catch (err) {
+        console.error("Store API error details:", err);
+      }
+  
       if (onSubmit) {
         onSubmit(data);
       }
     } catch (err) {
-      console.error(err);
+      console.error("Main error:", err);
       setError(err.message);
     } finally {
       setLoading(false);

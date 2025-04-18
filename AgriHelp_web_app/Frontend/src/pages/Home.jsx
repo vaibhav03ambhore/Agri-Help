@@ -3,7 +3,8 @@ import { useEffect } from "react";
 import { useCallback } from "react";
 import { useState } from "react";
 import VideoModal from "../components/VideoModal";
-
+import { api } from '../utils/apiService';
+import { Link } from "react-router-dom";
 
 const Home = () => {
   const [isVideoModalOpen, setIsVideoModalOpen] = useState(false);
@@ -12,6 +13,7 @@ const Home = () => {
     email: "",
     message: "",
   });
+
   const [newsletterEmail, setNewsletterEmail] = useState("");
   const [formErrors, setFormErrors] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -23,6 +25,7 @@ const Home = () => {
   const totalSlides = 4;
   const sliderRef = useRef(null);
   const demoVideoUrl = "https://www.youtube.com/embed/Nf8mL8vaMIY?si=CT7uG9YtKRr-flss";
+
   const checkScroll = useCallback(() => {
     if (sliderRef.current) {
       const { scrollLeft, scrollWidth, clientWidth } = sliderRef.current;
@@ -32,9 +35,27 @@ const Home = () => {
   }, []);
 
   const [isHovered, setIsHovered] = useState(false);
+  const [isLogeddIn,setLogeddIn]=useState(false);
+  const [loading,setLoading]=useState(true);
 
-  
-  
+  useEffect(()=>{
+    const getProfile=async()=>{
+      try{
+        setLoading(true);
+        const data=await api.getFarmerProfile();
+        if (data.success) {
+            setLogeddIn(true);
+          return;
+        }else setLogeddIn(false)
+      }catch(err){
+        console.error(err);
+      }finally{
+        setLoading(false);
+      }
+      
+    }
+    getProfile();
+  },[])
 
   useEffect(() => {
     const slider = sliderRef.current;
@@ -121,10 +142,7 @@ const Home = () => {
       });
     }
   };
-
-
-
-     
+  
   
   const validateForm = () => {
     const errors = {};
@@ -137,6 +155,7 @@ const Home = () => {
     if (!contactForm.message.trim()) errors.message = "Message is required";
     return errors;
   };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     const errors = validateForm();
@@ -145,16 +164,11 @@ const Home = () => {
     if (Object.keys(errors).length === 0) {
       setIsSubmitting(true);
       try {
-        const response = await fetch("/api/submit-contact-form", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(contactForm),
-        });
-
-        const result = await response.json();
-        if (result.success) {
+        // Use the API service instead of direct import
+        const result = await api.submitContactForm(contactForm);
+        
+        console.log(result.message);
+        if (result.success|| result.message) {
           setSubmitSuccess(true);
           setContactForm({ name: "", email: "", message: "" });
           setTimeout(() => setSubmitSuccess(false), 3000);
@@ -169,12 +183,24 @@ const Home = () => {
       }
     }
   };
+
   const handleNewsletterSubmit = async (e) => {
     e.preventDefault();
     setNewsletterSuccess(true);
     setNewsletterEmail("");
     setTimeout(() => setNewsletterSuccess(false), 3000);
   };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#4a8b3f] mx-auto mb-4"></div>
+          <p className="text-gray-600">Loading your Homepage...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen flex flex-col bg-[#f8f9fa]">
@@ -195,12 +221,12 @@ const Home = () => {
             Revolutionizing Agriculture with Advanced AI Solutions
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <a
-              href="/get-started"
+            <Link
+              to={(isLogeddIn)?`/dashboard`:`/get-started`}
               className="bg-[#4a8b3f] hover:bg-[#3a6d31] text-white font-bold py-4 px-10 rounded-lg transition duration-300 text-lg shadow-lg hover:shadow-xl transform hover:-translate-y-1"
             >
-              Get Started
-            </a>
+             {(isLogeddIn)?`Go to Dashboard`:`Get Started`}
+            </Link>
             <button
               onClick={() => setIsVideoModalOpen(true)}
               className="bg-white/10 hover:bg-white/20 text-white font-bold py-4 px-10 rounded-lg transition duration-300 text-lg border-2 border-white/30 backdrop-blur-sm"

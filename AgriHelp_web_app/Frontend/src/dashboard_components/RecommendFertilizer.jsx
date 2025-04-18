@@ -1,4 +1,5 @@
 import { useState} from "react";
+import api from "../utils/apiService";
 
 const RecommendFertilizer=({ onSubmit, initialData }) =>{
   const [formData, setFormData] = useState({
@@ -14,7 +15,8 @@ const RecommendFertilizer=({ onSubmit, initialData }) =>{
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [prediction, setPrediction] = useState(null);
-
+  const [confidence,setConfidence]= useState(null);
+  
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({
@@ -31,7 +33,7 @@ const RecommendFertilizer=({ onSubmit, initialData }) =>{
 
     try {
       const response = await fetch(
-        "http://127.0.0.1:4000/api/fertilizer/predict",
+        'https://agri-help-fertilizer.onrender.com/predict',
         {
           method: "POST",
           headers: {
@@ -46,7 +48,17 @@ const RecommendFertilizer=({ onSubmit, initialData }) =>{
       }
 
       const data = await response.json();
+
+
+      const fertilizerData = {
+        ...formData,
+        recommendation: data.recommendation,
+        Confidence: data.confidence
+      }
+      await api.storeFertilizerResponse(fertilizerData);
+
       if (data.recommendation) {
+        setConfidence(data.confidence);
         setPrediction(data.recommendation);
         if (onSubmit) {
           onSubmit(data.recommendation);
@@ -295,6 +307,9 @@ const RecommendFertilizer=({ onSubmit, initialData }) =>{
               Recommended Fertilizer
             </h3>
             <p className="text-3xl font-bold text-green-700">{prediction}</p>
+            <p className="text-3xl font-bold text-[#4a8b3f] mb-2">
+            Confidence: {confidence*100}% 
+            </p>
           </div>
         )}
       </div>

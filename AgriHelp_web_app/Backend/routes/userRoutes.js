@@ -8,3 +8,4 @@ router.post("/create-farmer-profile", createFarmerProfile);
 router.get("/get-farmer-profile", authenticate, getFarmerProfile);
 
 export default router;
+

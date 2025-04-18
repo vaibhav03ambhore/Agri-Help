@@ -4,6 +4,8 @@ import BasicInformationStep from "../components/BasicInformationStep";
 import ChallengesGoalsStep from "../components/ChallengesGoalsStep";
 import TechnologyStep from "../components/TechnologyStep";
 import FarmDetailsStep from "../components/FarmerDetailStep";
+import { api } from '../utils/apiService';
+import { Link } from "react-router-dom";
 
 const GetStarted=()=> {
   const [step, setStep] = useState(1);
@@ -45,45 +47,35 @@ const GetStarted=()=> {
     setError(null);
 
     try {
-      const response = await fetch("/api/create-farmer-profile", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          basicInfo: formData.basicInfo,
-          farmDetails: formData.farmDetails, 
-          technology: formData.technology, 
-          cropSelections: [
-            ...formData.farmDetails.currentCrops.map((crop) => ({
-              name: crop,
-              isCurrent: true,
-              isPlanned: false,
-              growingSeason: formData.farmDetails.growingSeason,
-            })),
-            ...formData.farmDetails.plannedCrops.map((crop) => ({
-              name: crop,
-              isCurrent: false,
-              isPlanned: true,
-              growingSeason: formData.farmDetails.growingSeason,
-            })),
-          ],
-          challenges: formData.challenges.map((challenge) => ({
-            type: challenge,
-            details: challenge === "Other" ? formData.challengeOther : "",
+      const profileData = {
+        basicInfo: formData.basicInfo,
+        farmDetails: formData.farmDetails, 
+        technology: formData.technology, 
+        cropSelections: [
+          ...formData.farmDetails.currentCrops.map((crop) => ({
+            name: crop,
+            isCurrent: true,
+            isPlanned: false,
+            growingSeason: formData.farmDetails.growingSeason,
           })),
-          goals: formData.goals.map((goal, index) => ({
-            type: goal,
-            priority: index + 1,
+          ...formData.farmDetails.plannedCrops.map((crop) => ({
+            name: crop,
+            isCurrent: false,
+            isPlanned: true,
+            growingSeason: formData.farmDetails.growingSeason,
           })),
-        }),
-        credentials: 'include',
-      });
-      if (!response.ok) {
-        const responseData = await response.json();
-        throw new Error(responseData.error|| "Failed to submit form");
-      }
-
+        ],
+        challenges: formData.challenges.map((challenge) => ({
+          type: challenge,
+          details: challenge === "Other" ? formData.challengeOther : "",
+        })),
+        goals: formData.goals.map((goal, index) => ({
+          type: goal,
+          priority: index + 1,
+        })),
+      };
+      
+      await api.createFarmerProfile(profileData);
       setSuccess(true);
     } catch (err) {
       setError(err.message);
@@ -92,6 +84,7 @@ const GetStarted=()=> {
       setLoading(false);
     }
   };
+
   const steps = [
     { number: 1, name: "Basic Information" },
     { number: 2, name: "Farm Details" },
@@ -127,18 +120,16 @@ const GetStarted=()=> {
               optimize your farming operations.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <a
-                href="/"
-                className="bg-[#4a8b3f] hover:bg-[#3a6d31] text-white font-bold py-3 px-8 rounded-lg transition duration-300"
-              >
+              <Link to="/" className="bg-[#4a8b3f] hover:bg-[#3a6d31] text-white font-bold py-3 px-8 rounded-lg transition duration-300">
                 Return to Home
-              </a>
-              <a
-                href="/dashboard"
+              </Link>
+              
+              <Link
+                to="/dashboard"
                 className="border-2 border-[#4a8b3f] text-[#4a8b3f] hover:bg-[#4a8b3f] hover:text-white font-bold py-3 px-8 rounded-lg transition duration-300"
               >
                 View Dashboard
-              </a>
+              </Link>
             </div>
           </div>
         </div>
@@ -158,7 +149,7 @@ const GetStarted=()=> {
           </p>
         </div>
         <div className="fixed bottom-4 right-4 z-50 group">
-          <a href="/account/signin" className="block">
+          <Link to="/account/signin" className="block">
             <div className="bg-[#4a8b3f] p-2 rounded-full cursor-pointer hover:bg-[#3a6d31] transition-colors relative">
               <svg
                 className="w-8 h-8 text-white"
@@ -177,7 +168,7 @@ const GetStarted=()=> {
                 Login
               </div>
             </div>
-          </a>
+          </Link>
         </div>
       </div>
 

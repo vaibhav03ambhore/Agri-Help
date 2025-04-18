@@ -13,7 +13,7 @@ export const createFarmerProfile = async (req, res) => {
       } = req.body;
 
     // Validate required fields
-    if (!basicInfo?.email || !basicInfo?.contactNumber) {
+    if (!basicInfo?.email && !basicInfo?.contactNumber) {
       return res.status(400).json({ error: "Missing required fields" });
     }
 
@@ -35,7 +35,7 @@ export const createFarmerProfile = async (req, res) => {
     res.cookie('access_token', token, {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
-      sameSite: 'strict',
+      sameSite: 'None',
       maxAge: 24 * 60 * 60 * 1000 // 1 day
     });
     return res.status(201).json({
@@ -50,8 +50,13 @@ export const createFarmerProfile = async (req, res) => {
   }
 };
 
+
+
+
+
 export const getFarmerProfile = async (req, res) => {
   try {
+    
     const farmer = await User.findById(req.user._id)
       .select('-__v -createdAt')
       .lean();
@@ -62,7 +67,7 @@ export const getFarmerProfile = async (req, res) => {
         error: "Farmer profile not found" 
       });
     }
-
+    
     res.status(200).json({
       success: true,
       data: farmer

@@ -1,4 +1,7 @@
 import { useState,useEffect } from "react";
+import { api } from '../utils/apiService';
+import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 const Login = () => {
   const [method, setMethod] = useState("email");
@@ -9,6 +12,8 @@ const Login = () => {
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
   const [errorTimer, setErrorTimer] = useState(null);
+
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (error) {
@@ -48,27 +53,21 @@ const Login = () => {
         }
       }
 
-      const response = await fetch("/api/handle-otp", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          type: "send",
-          email: method === "email" ? email : null,
-          mobile: method === "mobile" ? mobile : null,
-        }),
-      });
+      const otpData = {
+        email: method === "email" ? email : null,
+        mobile: method === "mobile" ? mobile : null,
+      };
 
-      if (!response.ok) {
-        throw new Error("Failed to send OTP");
-      }
-
-      const data = await response.json();
+      const data = await api.sendOTP(otpData);
+      
       if (data && data.success) {
         setStep("otp");
       } else {
+        console.log("errrrr: "+data);
         throw new Error(data?.error || "Failed to send OTP");
       }
     } catch (err) {
+      console.log("err: "+err.message);
       setError(err.message);
     } finally {
       setLoading(false);
@@ -84,27 +83,16 @@ const Login = () => {
         throw new Error("Please enter the OTP");
       }
 
-      const response = await fetch("/api/handle-otp", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          type: "verify",
-          email: method === "email" ? email : null,
-          mobile: method === "mobile" ? mobile : null,
-          otp,
-        }),
-        credentials: 'include',
-      });
+      const verifyData = {
+        email: method === "email" ? email : null,
+        mobile: method === "mobile" ? mobile : null,
+        otp,
+      };
 
+      const data = await api.verifyOTP(verifyData);
       
-      if (!response.ok) {
-        const responseData = await response.json();
-        throw new Error(responseData.error|| "Failed to verify OTP");
-      }
-
-      const data = await response.json();
       if (data && data.success) {
-        window.location.href = "/dashboard";
+        navigate("/dashboard");
       } else {
         throw new Error(data?.error || "Invalid OTP");
       }
@@ -124,7 +112,7 @@ const Login = () => {
       <div className="max-w-md mx-auto mt-10 px-4">
         <div className="bg-white rounded-2xl shadow-xl p-8">
           <div className="flex flex-col gap-6">
-            <button
+            {/* <button
               className="w-full flex items-center justify-center gap-3 px-4 py-3 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
               onClick={() => {}}
             >
@@ -135,7 +123,7 @@ const Login = () => {
               <div className="flex-grow border-t border-gray-300"></div>
               <span className="text-gray-500">or</span>
               <div className="flex-grow border-t border-gray-300"></div>
-            </div>
+            </div> */}
             <div className="flex gap-4 p-1 bg-gray-100 rounded-lg">
               <button
                 className={`flex-1 py-2 rounded-lg text-center transition-colors ${
@@ -239,12 +227,12 @@ const Login = () => {
 
             <p className="text-center text-gray-600 text-sm">
               Don't have an account?{" "}
-              <a
-                href="/get-started"
+              <Link
+                to="/get-started"
                 className="text-[#4a8b3f] hover:text-[#3a6d31]"
               >
                 Sign up
-              </a>
+              </Link>
             </p>
           </div>
         </div>
