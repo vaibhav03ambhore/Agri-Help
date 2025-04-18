@@ -35,7 +35,7 @@ const PredictDisease= ({ onSubmit, initialData })=> {
       console.log("First API call to:", 'https://agri-help-wl8j.onrender.com/predict');
       
       const response = await fetch(
-        'https://agri-help-wl8j.onrender.com/predict',
+        'http://localhost:5001/predict',
         {
           method: "POST",
           body: formData,

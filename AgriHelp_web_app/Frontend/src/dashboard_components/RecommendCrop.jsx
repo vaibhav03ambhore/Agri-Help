@@ -32,7 +32,7 @@ const RecommendCrop=({ onSubmit, initialData }) =>{
     setPrediction(null);
 
     try {
-      const response = await fetch('https://agri-help-crop.onrender.com/predict', {
+      const response = await fetch('http://localhost:5004/predict', {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
