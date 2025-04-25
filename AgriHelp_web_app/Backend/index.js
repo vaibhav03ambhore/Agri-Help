@@ -38,7 +38,7 @@ app.use('/api',predictionRoutes);
 app.get('/api/warmup', warmupServices);
 
 
-warmupServices();
+// warmupServices();
 app.post('/api/submit-contact-form',contactForm);
 
 app.get('/health', (req, res) => {
