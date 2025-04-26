@@ -24,7 +24,8 @@ const Home = () => {
   const [currentSlide, setCurrentSlide] = useState(0);
   const totalSlides = 4;
   const sliderRef = useRef(null);
-  const demoVideoUrl = "https://www.youtube.com/embed/Nf8mL8vaMIY?si=CT7uG9YtKRr-flss";
+  // const demoVideoUrl = "https://www.youtube.com/embed/Nf8mL8vaMIY?si=CT7uG9YtKRr-flss";
+  const demoVideoUrl = "https://www.youtube.com/embed/aQQs4ZY-ZVs?si=FpL4B1bnut15xkgf";
 
   const checkScroll = useCallback(() => {
     if (sliderRef.current) {
