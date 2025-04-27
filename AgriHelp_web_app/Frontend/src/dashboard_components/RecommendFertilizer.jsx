@@ -183,7 +183,6 @@ const RecommendFertilizer=({ onSubmit, initialData }) =>{
                   "Maize",
                   "Urad",
                   "Soybean",
-                  "Ginger",
                   "Turmeric",
                   "Grapes",
                   "Tomato",

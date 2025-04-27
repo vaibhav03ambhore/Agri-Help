@@ -429,8 +429,8 @@ const Dashboard = () => {
                 "Phosphorus": 50,
                 "Potassium": 40,
                 "pH": 6.5,
-                "Rainfall": 100,
-                "Temperature": 25
+                "Rainfall": 600,
+                "Temperature": 15
               }}
             />
           ) : selectedMenuItem === "recommend-fertilizer" ? (

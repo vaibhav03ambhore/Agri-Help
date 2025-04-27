@@ -92,8 +92,8 @@ const RecommendCrop=({ onSubmit, initialData }) =>{
                 onChange={handleInputChange}
                 className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-green-500 focus:border-green-500"
                 required
-                min="-50"
-                max="60"
+                min="10"
+                max="50"
                 step="0.1"
               />
             </div>
