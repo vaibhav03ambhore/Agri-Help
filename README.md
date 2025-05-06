@@ -31,7 +31,18 @@ AgriHelp is a full-stack agricultural assistant that leverages Machine Learning 
 
 ---
 
+---
+
+## 🎥 Watch the AgriHelp Demo Video
+Check out the demo video to understand how AgriHelp works and how it can empower farmers with real-time crop recommendations, disease identification, and pest detection.
+
+[![Watch the video](https://img.youtube.com/vi/aQQs4ZY-ZVs/0.jpg)](https://www.youtube.com/watch?v=aQQs4ZY-ZVs)
+
+> Click the image above to watch the demo on YouTube!
+
+
 ## 🚀 Local Setup
+
 
 ### Prerequisites
 - 🟢 Node.js v18+  
@@ -39,6 +50,8 @@ AgriHelp is a full-stack agricultural assistant that leverages Machine Learning 
 - ☁️ MongoDB Atlas account  
 
 ### Installation Steps
+
+#### Clone or download the this Repo and follow the steps given below
 
 #### 1. 🧠 ML Model Microservices (Flask)
 
